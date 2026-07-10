@@ -36,6 +36,9 @@ export default function ApplicantsPage() {
   const [scheduling, setScheduling] = useState(false);
 
   useEffect(() => {
+    // Client-only init after mount — localStorage is unavailable during SSR, so reading it in
+    // an effect (rather than during render) is what avoids a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAuthed(Boolean(getToken()));
     setUsername(getUser());
   }, []);
@@ -61,6 +64,7 @@ export default function ApplicantsPage() {
 
   useEffect(() => {
     if (authed !== true) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     fetchApplicants()
       .then((data) => {
