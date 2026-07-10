@@ -3,6 +3,7 @@ package com.waypoint.persistence;
 import com.waypoint.model.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * overwritten here.
  */
 @Component
+@Order(1)
 public class DataSeeder implements CommandLineRunner {
 
     private final ApplicantJpaRepository repository;

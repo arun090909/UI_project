@@ -15,7 +15,9 @@ Monorepo with two independent build units:
 
 - `frontend/` — Next.js 16 (App Router) + React 19 + Tailwind CSS v4. Runs on **:3000**.
 - `backend/` — Spring Boot 4 + Spring Data JPA + Spring Security. Runs on **:8081**.
-- Data lives in **PostgreSQL** in a Docker container on **:5544** (see below).
+- **PostgreSQL** (relational data: applicants, users) in Docker on **:5544**.
+- **MongoDB** (documents: resume PDFs) in Docker on **:27017**.
+- `Jenkinsfile` — CI pipeline (builds backend + frontend).
 
 Ports are deliberately non-default: 8080 (a native service), 5432/5433 (native Postgres) were
 already occupied on the original dev machine.
@@ -26,16 +28,18 @@ already occupied on the original dev machine.
   PowerShell PATH, not the Bash PATH.
 - **JDK 21** at `C:\Program Files\Java\jdk-21.0.11`. `mvn` is not installed — use the bundled
   `mvnw` wrapper, and set `JAVA_HOME` to the JDK for it to work.
-- **Docker** (for PostgreSQL).
+- **Docker** (for PostgreSQL, MongoDB, and the Jenkins CI run).
 
 ## Commands
 
-Start PostgreSQL (first time; persists in the `waypoint_pgdata` volume across restarts):
+Start the databases (first time; both persist in named Docker volumes):
 
 ```
 docker run -d --name waypoint-postgres \
   -e POSTGRES_USER=waypoint -e POSTGRES_PASSWORD=waypoint -e POSTGRES_DB=waypoint \
   -p 5544:5432 -v waypoint_pgdata:/var/lib/postgresql/data postgres:16-alpine
+
+docker run -d --name waypoint-mongo -p 27017:27017 -v waypoint_mongo:/data/db mongo:7
 ```
 
 Backend (from `backend/`, with `JAVA_HOME` set to the JDK):
@@ -71,11 +75,17 @@ serializes to those labels via `@JsonValue`/`@JsonCreator`.
   (`POST /api/auth/login`), `HealthController`. `ResumePdf` generates a valid PDF with no external
   dependency. `web/` speaks DTOs only.
 - `service/ApplicantService` — business operations, maps entities ↔ DTOs.
+- `service/ResumeService` + `ResumePdf` — generates resume PDFs and serves them from MongoDB.
 - `persistence/` — JPA entities (`ApplicantEntity` with an embedded `ReviewEmbeddable`,
   `UserEntity`), Spring Data repositories, and `DataSeeder` (seeds applicants + demo user **only
-  when the tables are empty**, so API edits survive restarts).
+  when the tables are empty**, so API edits survive restarts). `persistence/mongo/` holds the
+  `ResumeDocument` and its Mongo repository; `ResumeSeeder` populates resumes after applicants.
 - `security/` — `SecurityConfig` (stateless, JWT), `JwtService` (jjwt), `JwtAuthFilter`.
+- `config/MongoConfig` — pins the Mongo database name (see gotchas).
 - `model/` — the DTO records above.
+
+**Data split.** Relational records (applicants, users) live in PostgreSQL via JPA; resume
+documents live in MongoDB. The resume endpoint reads bytes from the `resumes` collection.
 
 **Frontend** (`frontend/src`): `app/page.tsx` is a client component holding all state (auth gate,
 filters, selection, scheduling modal). `lib/api.ts` is the API client — it attaches the JWT from
@@ -98,3 +108,7 @@ Everything under `/api/**` is authenticated except `/api/health` and `/api/auth/
   (not the default 403) via a custom `authenticationEntryPoint` plus permitting the `ERROR`
   dispatch.
 - The Playwright E2E test assumes both servers are already running; it does not start them.
+- **MongoDB database name**: Spring Boot 4 did not honor `spring.data.mongodb.database` here (it
+  defaulted to `test`), so `MongoConfig` pins the client + database (`waypoint`) explicitly.
+- **Jenkins**: the `Jenkinsfile` builds both modules (backend `mvnw package`, frontend
+  `npm ci && npm run build`). It's designed to run on an agent with JDK 21 and Node 20.

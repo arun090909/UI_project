@@ -1,4 +1,4 @@
-package com.waypoint.web;
+package com.waypoint.service;
 
 import com.waypoint.model.Applicant;
 
@@ -12,9 +12,9 @@ import java.util.List;
  * dependencies. Byte offsets in the cross-reference table are computed from the actual
  * bytes written, so the output opens in any standard PDF viewer.
  *
- * <p>This is placeholder content standing in for a real uploaded resume document.
+ * <p>Used to populate the resume documents stored in MongoDB.
  */
-final class ResumePdf {
+public final class ResumePdf {
 
     private static final int LEFT = 72;
     private static final int TOP = 720;
@@ -23,7 +23,7 @@ final class ResumePdf {
     private ResumePdf() {
     }
 
-    static byte[] generate(Applicant applicant) {
+    public static byte[] generate(Applicant applicant) {
         byte[] content = contentStream(buildLines(applicant));
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();

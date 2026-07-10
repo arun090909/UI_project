@@ -2,7 +2,9 @@ package com.waypoint.web;
 
 import com.waypoint.model.Applicant;
 import com.waypoint.model.Stage;
+import com.waypoint.persistence.mongo.ResumeDocument;
 import com.waypoint.service.ApplicantService;
+import com.waypoint.service.ResumeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,11 @@ import java.util.List;
 public class ApplicantController {
 
     private final ApplicantService service;
+    private final ResumeService resumeService;
 
-    public ApplicantController(ApplicantService service) {
+    public ApplicantController(ApplicantService service, ResumeService resumeService) {
         this.service = service;
+        this.resumeService = resumeService;
     }
 
     /** List applicants, optionally filtered by pipeline stage and/or posting. */
@@ -61,15 +65,14 @@ public class ApplicantController {
                 .orElseThrow(() -> notFound(id));
     }
 
-    /** Serves the candidate's resume as an inline PDF — backs the "View resume" action. */
+    /** Serves the candidate's resume PDF (stored in MongoDB) — backs the "View resume" action. */
     @GetMapping(value = "/{id}/resume", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> resume(@PathVariable String id) {
-        Applicant applicant = service.findById(id).orElseThrow(() -> notFound(id));
-        byte[] pdf = ResumePdf.generate(applicant);
+        ResumeDocument resume = resumeService.getResume(id).orElseThrow(() -> notFound(id));
         return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_PDF)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + applicant.resumeFile() + "\"")
-                .body(pdf);
+                .contentType(MediaType.parseMediaType(resume.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resume.getFilename() + "\"")
+                .body(resume.getContent());
     }
 
     private ResponseStatusException notFound(String id) {
