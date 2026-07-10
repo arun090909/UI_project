@@ -1,16 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import { getProfile } from "@/lib/profile";
+import { useProfile } from "@/lib/profile";
 
 export default function DashboardPage() {
-  const [firstName, setFirstName] = useState<string | null>(null);
-
-  useEffect(() => {
-    setFirstName(getProfile()?.firstName || null);
-  }, []);
+  const firstName = useProfile()?.firstName || null;
 
   return (
     <div className="min-h-screen bg-paper">
