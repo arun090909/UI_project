@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #171B1E;
+  --color-ink-soft: #4B5157;
+  --color-muted: #868C84;
+  --color-paper: #F5F4EF;
+  --color-surface: #FFFFFF;
+  --color-line: #E3E1D8;
+  --color-accent: #1D4B3D;
+  --color-accent-soft: #E7EDE9;
+  --color-amber: #8A6A22;
+  --color-amber-soft: #F3ECDA;
+  --color-error: #9C3A2E;
+  --color-error-soft: #F6E7E4;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
+  --font-mono: var(--font-ibm-plex-mono);
+}
+
+html, body { height: 100%; }
+
+body {
+  background: #F5F4EF;
+  color: #171B1E;
+}
+
+/* Dual-range salary slider */
+.range-wrap { position: relative; height: 32px; }
+.range-track { position: absolute; top: 14px; left: 0; right: 0; height: 4px; background: #E3E1D8; border-radius: 3px; }
+.range-fill  { position: absolute; top: 14px; height: 4px; background: #1D4B3D; border-radius: 3px; }
+.range-wrap input[type=range] {
+  position: absolute; top: 0; left: 0; width: 100%; margin: 0;
+  height: 32px; background: none; -webkit-appearance: none; pointer-events: none;
+}
+.range-wrap input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; pointer-events: auto;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; border: 2px solid #1D4B3D; cursor: pointer;
+}
+.range-wrap input[type=range]::-moz-range-thumb {
+  pointer-events: auto; width: 16px; height: 16px;
+  border-radius: 50%; background: #fff; border: 2px solid #1D4B3D; cursor: pointer;
+}
+.range-wrap input[type=range]::-webkit-slider-runnable-track { background: transparent; height: 32px; }
