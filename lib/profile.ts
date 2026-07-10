@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from "react";
+
 export type StoredProfile = {
   firstName: string;
   lastName: string;
@@ -44,4 +46,33 @@ export function getProfile(): StoredProfile | null {
   } catch {
     return null;
   }
+}
+
+function subscribeToProfile(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+let cachedRaw: string | null = null;
+let cachedProfile: StoredProfile | null = null;
+
+function getProfileSnapshot(): StoredProfile | null {
+  const raw = localStorage.getItem(PROFILE_KEY);
+  if (raw !== cachedRaw) {
+    cachedRaw = raw;
+    try {
+      cachedProfile = raw ? JSON.parse(raw) : null;
+    } catch {
+      cachedProfile = null;
+    }
+  }
+  return cachedProfile;
+}
+
+function getServerProfileSnapshot() {
+  return null;
+}
+
+export function useProfile(): StoredProfile | null {
+  return useSyncExternalStore(subscribeToProfile, getProfileSnapshot, getServerProfileSnapshot);
 }

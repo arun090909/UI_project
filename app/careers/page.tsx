@@ -28,13 +28,46 @@ function CheckIcon() {
   );
 }
 
-function MatchMeter({ pct }: { pct: number }) {
+function FilterDropdown({
+  label, options, isOpen, isActive, selectedValue, dropdownRef, onToggle, onSelect,
+}: {
+  label: string;
+  options: string[];
+  isOpen: boolean;
+  isActive: boolean;
+  selectedValue: string;
+  dropdownRef: React.RefObject<HTMLDivElement | null>;
+  onToggle: () => void;
+  onSelect: (val: string) => void;
+}) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="w-[70px] h-[5px] bg-line rounded-full overflow-hidden">
-        <div className="h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
-      </div>
-      <span className="font-mono text-[12px] text-ink-soft">{pct}</span>
+    <div className="relative" ref={isOpen ? dropdownRef : undefined}>
+      <button
+        type="button"
+        onClick={onToggle}
+        className={`flex items-center gap-1.5 px-3.5 py-2 border rounded-full text-[12.5px] font-medium transition-all ${
+          isActive ? "bg-accent-soft border-accent text-accent" : "bg-surface border-line text-ink-soft hover:border-ink-soft"
+        }`}
+      >
+        {label}
+        <span className={`transition-transform ${isOpen ? "rotate-180" : ""}`}><ChevronIcon /></span>
+      </button>
+      {isOpen && (
+        <div className="absolute top-[calc(100%+8px)] left-0 bg-surface border border-line rounded-[10px] shadow-[0_12px_28px_rgba(23,27,30,0.1)] p-2 min-w-[180px] z-10">
+          {options.map((opt) => {
+            const checked = selectedValue === opt;
+            return (
+              <div key={opt} onClick={() => onSelect(opt)}
+                className="flex items-center gap-2.5 px-2.5 py-2.5 rounded-md text-[13px] text-ink-soft cursor-pointer hover:bg-paper">
+                <span className={`w-[15px] h-[15px] border rounded flex items-center justify-center shrink-0 ${checked ? "bg-accent border-accent" : "border-line"}`}>
+                  {checked && <CheckIcon />}
+                </span>
+                <span className={checked ? "text-ink font-medium" : ""}>{opt}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -98,43 +131,6 @@ export default function CareersPage() {
     return filters[key] !== "" && filters[key] !== defaults[key];
   }
 
-  function FilterDropdown({
-    label, filterKey, options,
-  }: { label: string; filterKey: FilterKey; options: string[] }) {
-    const open = openDropdown === filterKey;
-    const active = isFilterActive(filterKey);
-    return (
-      <div className="relative" ref={filterKey === openDropdown ? dropdownRef : undefined}>
-        <button
-          type="button"
-          onClick={() => toggleDropdown(filterKey)}
-          className={`flex items-center gap-1.5 px-3.5 py-2 border rounded-full text-[12.5px] font-medium transition-all ${
-            active ? "bg-accent-soft border-accent text-accent" : "bg-surface border-line text-ink-soft hover:border-ink-soft"
-          }`}
-        >
-          {label}
-          <span className={`transition-transform ${open ? "rotate-180" : ""}`}><ChevronIcon /></span>
-        </button>
-        {open && (
-          <div className="absolute top-[calc(100%+8px)] left-0 bg-surface border border-line rounded-[10px] shadow-[0_12px_28px_rgba(23,27,30,0.1)] p-2 min-w-[180px] z-10">
-            {options.map((opt) => {
-              const checked = filters[filterKey] === opt;
-              return (
-                <div key={opt} onClick={() => setFilter(filterKey, opt)}
-                  className="flex items-center gap-2.5 px-2.5 py-2.5 rounded-md text-[13px] text-ink-soft cursor-pointer hover:bg-paper">
-                  <span className={`w-[15px] h-[15px] border rounded flex items-center justify-center shrink-0 ${checked ? "bg-accent border-accent" : "border-line"}`}>
-                    {checked && <CheckIcon />}
-                  </span>
-                  <span className={checked ? "text-ink font-medium" : ""}>{opt}</span>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-paper">
       <Navbar />
@@ -182,11 +178,31 @@ export default function CareersPage() {
 
           {/* Filters */}
           <div className="flex items-center gap-2.5 flex-wrap mt-3.5" ref={dropdownRef}>
-            <FilterDropdown label="Date posted" filterKey="datePosted" options={DATE_OPTIONS} />
-            <FilterDropdown label="Distance" filterKey="distance" options={DISTANCE_OPTIONS} />
+            <FilterDropdown
+              label="Date posted" options={DATE_OPTIONS}
+              isOpen={openDropdown === "datePosted"} isActive={isFilterActive("datePosted")}
+              selectedValue={filters.datePosted} dropdownRef={dropdownRef}
+              onToggle={() => toggleDropdown("datePosted")} onSelect={(val) => setFilter("datePosted", val)}
+            />
+            <FilterDropdown
+              label="Distance" options={DISTANCE_OPTIONS}
+              isOpen={openDropdown === "distance"} isActive={isFilterActive("distance")}
+              selectedValue={filters.distance} dropdownRef={dropdownRef}
+              onToggle={() => toggleDropdown("distance")} onSelect={(val) => setFilter("distance", val)}
+            />
             <div className="w-px h-4.5 bg-line mx-0.5" />
-            <FilterDropdown label="Employment type" filterKey="employmentType" options={EMPLOYMENT_OPTIONS} />
-            <FilterDropdown label="Work type" filterKey="workType" options={WORK_OPTIONS} />
+            <FilterDropdown
+              label="Employment type" options={EMPLOYMENT_OPTIONS}
+              isOpen={openDropdown === "employmentType"} isActive={isFilterActive("employmentType")}
+              selectedValue={filters.employmentType} dropdownRef={dropdownRef}
+              onToggle={() => toggleDropdown("employmentType")} onSelect={(val) => setFilter("employmentType", val)}
+            />
+            <FilterDropdown
+              label="Work type" options={WORK_OPTIONS}
+              isOpen={openDropdown === "workType"} isActive={isFilterActive("workType")}
+              selectedValue={filters.workType} dropdownRef={dropdownRef}
+              onToggle={() => toggleDropdown("workType")} onSelect={(val) => setFilter("workType", val)}
+            />
 
             {/* Salary dropdown */}
             <div className="relative">

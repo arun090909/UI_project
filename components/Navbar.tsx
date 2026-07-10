@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getProfile, StoredProfile } from "@/lib/profile";
+import { useProfile, StoredProfile } from "@/lib/profile";
 
 const NAV_LINKS = [
   { label: "Home", href: "/dashboard" },
@@ -22,11 +21,7 @@ function initialsOf(profile: StoredProfile | null) {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [profile, setProfile] = useState<StoredProfile | null>(null);
-
-  useEffect(() => {
-    setProfile(getProfile());
-  }, []);
+  const profile = useProfile();
 
   return (
     <nav className="sticky top-0 z-20 bg-surface border-b border-line flex items-center justify-between h-16 px-11">
