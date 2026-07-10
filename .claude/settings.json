@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "mcp__playwright__browser_click",
+      "Bash(powershell -Command \"[System.Convert]::FromBase64String\\('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='\\) | Set-Content -Path 'd:\\\\waypoint\\\\test-avatar.png' -Encoding Byte\")",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_type",
+      "Bash(tail -c 4000 /tmp/waypoint-dev.log 2>&1)",
+      "Read(//tmp/**)",
+      "Bash(powershell -Command \"Get-Process -Id 12196 -ErrorAction SilentlyContinue | Select-Object Id,ProcessName,StartTime\")",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object LocalPort,OwningProcess\")",
+      "Bash(powershell -Command '$conn = Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue; if \\($conn\\) { Get-Process -Id $conn[0].OwningProcess | Select-Object Id,ProcessName,Path,StartTime }')",
+      "Bash(powershell -Command \"Get-Content 'd:\\\\waypoint\\\\.next\\\\dev\\\\logs\\\\next-development.log' -Tail 20\")"
+    ]
+  }
+}
