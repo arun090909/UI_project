@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "Waypoint Employer Portal",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "jwt",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/health"
+      }
+    },
+    {
+      "name": "Register Employer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.accessToken) pm.collectionVariables.set('jwt', body.accessToken);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"companyName\": \"Meridian Labs\",\n  \"industry\": \"Technology\",\n  \"companySize\": \"26-100\",\n  \"founded\": \"2024\",\n  \"firstName\": \"Maya\",\n  \"lastName\": \"Linden\",\n  \"workEmail\": \"maya.linden@example.com\",\n  \"phone\": \"555-0199\",\n  \"password\": \"Password123!\",\n  \"city\": \"Irving\",\n  \"streetAddress\": \"100 Main St\",\n  \"zipCode\": \"75039\",\n  \"careersContactEmail\": \"careers@example.com\",\n  \"website\": \"https://example.com\",\n  \"aboutCompany\": \"Local employer hiring technical talent.\",\n  \"hiringAreas\": [\"Engineering\", \"Design\"]\n}"
+        },
+        "url": "{{baseUrl}}/api/auth/employer/register"
+      }
+    },
+    {
+      "name": "Login Employer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.accessToken) pm.collectionVariables.set('jwt', body.accessToken);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"workEmail\": \"maya.linden@example.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": "{{baseUrl}}/api/auth/employer/login"
+      }
+    },
+    {
+      "name": "Create Job Posting",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jobId\": \"JOB-1024\",\n  \"title\": \"Senior Frontend Engineer\",\n  \"workType\": \"Hybrid\",\n  \"location\": \"Irving, TX\",\n  \"employmentType\": \"Full-time\",\n  \"experienceLevel\": \"Senior\",\n  \"salaryMin\": 120000,\n  \"salaryMax\": 150000,\n  \"requiredSkills\": [\"React\", \"TypeScript\", \"REST APIs\"],\n  \"description\": \"Build employer-facing portal workflows.\",\n  \"applicationDeadline\": \"2026-08-31\",\n  \"resumeRequired\": true\n}"
+        },
+        "url": "{{baseUrl}}/api/employer/jobs"
+      }
+    },
+    {
+      "name": "List Job Postings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/employer/jobs"
+      }
+    },
+    {
+      "name": "List Events",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/employer/events"
+      }
+    }
+  ]
+}
