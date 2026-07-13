@@ -1,14 +1,1 @@
-#Jhansi-Junior Developer 
-
-I worked on the Waypoint Employer Portal, and my assigned responsibility was to develop the Home, Profile, and Settings pages for the employer side of the application.
-First, I designed and implemented the Employer Home page using Next.js, React, TypeScript, and Tailwind CSS. I created the top navigation bar with Home, Job Posting, Event Scheduling, Notifications, and the employer account dropdown. I also added a dashboard section that displays the number of open job postings, applicants, and upcoming events. I made the Edit Dashboard button functional, allowing the employer to update those values and save them temporarily in the browser using localStorage.
-Next, I developed the Employer Profile page. I added sections for employer name, company name, email, phone number, website, location, industry, company size, founded year, time zone, company description, hiring focus, workplace details, social links, and team members. I also added a hiring performance summary that displays Jobs Posted, Events Scheduled, and Employees Hired. I created an Edit Profile form so the employer can update the profile information. I also added an Invite Team Member feature where the employer can add a team member with a name, role, and access level such as Member, Admin, or Owner.
-I then developed the Settings page. I created sections for Account Information, Account and Security, Notification Preferences, Appearance and Region, and Advanced Privacy Features. I added working toggle buttons for email notifications, applicant notifications, event reminders, two-factor authentication, login alerts, profile visibility, and data sharing. I also created a Change Password form, theme selection, language selection, timezone selection, account data download, privacy review, and sign-out-from-all-devices functionality.
-I made the buttons and forms functional using React state management. I used localStorage to temporarily save dashboard values, employer profile details, team members, and settings so the data remains available after refreshing the page. This is currently frontend-level persistence. The next step is to connect the pages to backend REST APIs and MongoDB so the data can be saved permanently and accessed from multiple devices
-I also integrated my work into the team’s existing GitHub repository. I cloned the repository, created a separate feature branch named:
-feature/employer-home-profile-settings
-I created separate routes for my modules:
-/home
-/profile
-/settings
-I worked in my own branch so I would not overwrite the Job Posting, Event Scheduling, Applicants, or other modules developed by my teammates. After testing the pages locally, I prepared the files to commit and push to GitHub so the team could review and merge my changes through a pull request.
+#Readme.file
