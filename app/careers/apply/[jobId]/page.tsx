@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { jobs } from "@/lib/mockData";
+import { US_STATES, zipMatchesState } from "@/lib/address";
+import { getProfile } from "@/lib/profile";
 
 export default function ApplyPage() {
   const params = useParams();
@@ -12,13 +14,31 @@ export default function ApplyPage() {
   const job = jobs.find((j) => j.id === jobId);
 
   const [phone, setPhone] = useState("(469) 555-0134");
+  const [street, setStreet] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
   const [note, setNote] = useState("");
   const [workAuth, setWorkAuth] = useState(false);
   const [resumeName, setResumeName] = useState("jordan_torres_resume.pdf");
   const [submitted, setSubmitted] = useState(false);
 
-  const [errors, setErrors] = useState({ phone: false, resume: false, auth: false });
+  const [errors, setErrors] = useState({
+    phone: false, resume: false, auth: false,
+    street: false, state: false, zip: false, zipMismatch: false,
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Prefill address from the saved profile once on mount — after that it's
+  // freely editable and won't get overwritten.
+  const hasPrefilledRef = useRef(false);
+  useEffect(() => {
+    if (hasPrefilledRef.current) return;
+    hasPrefilledRef.current = true;
+    const profile = getProfile();
+    setStreet((prev) => profile?.street || prev);
+    setState((prev) => profile?.state || prev);
+    setZip((prev) => profile?.zip || prev);
+  }, []);
 
   if (!job) {
     return (
@@ -38,10 +58,16 @@ export default function ApplyPage() {
   }
 
   function handleSubmit() {
+    const zipValid = /^\d{5}$/.test(zip);
+    const zipMismatch = zipValid && !!state && !zipMatchesState(zip, state);
     const newErrors = {
       phone: phone.trim().length < 7,
       resume: resumeName.trim().length === 0,
       auth: !workAuth,
+      street: !street.trim(),
+      state: !state,
+      zip: !zipValid || zipMismatch,
+      zipMismatch,
     };
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
@@ -198,6 +224,57 @@ export default function ApplyPage() {
                       className={`w-full px-3.5 py-[11px] border rounded-md text-[14px] text-ink bg-surface outline-none transition-colors focus:border-accent ${errors.phone ? "border-error" : "border-line"}`}
                     />
                     {errors.phone && <p className="text-[11.5px] text-error mt-1.5">Enter a phone number.</p>}
+                  </div>
+
+                  {/* Address */}
+                  <div>
+                    <label className="text-[12.5px] font-medium text-ink-soft block mb-1.5">
+                      Street address <span className="text-error">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="2201 N MacArthur Blvd"
+                      value={street}
+                      onChange={(e) => setStreet(e.target.value)}
+                      className={`w-full px-3.5 py-[11px] border rounded-md text-[14px] text-ink bg-surface outline-none transition-colors focus:border-accent ${errors.street ? "border-error" : "border-line"}`}
+                    />
+                    {errors.street && <p className="text-[11.5px] text-error mt-1.5">Enter your street address.</p>}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[12.5px] font-medium text-ink-soft block mb-1.5">
+                        State <span className="text-error">*</span>
+                      </label>
+                      <select
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                        className={`w-full px-3.5 py-[11px] border rounded-md text-[14px] font-sans text-ink bg-surface outline-none transition-colors focus:border-accent ${errors.state ? "border-error" : "border-line"}`}
+                      >
+                        {US_STATES.map((s, i) => (
+                          <option key={i} value={s}>{s === "" ? "Select state" : s}</option>
+                        ))}
+                      </select>
+                      {errors.state && <p className="text-[11.5px] text-error mt-1.5">Select your state.</p>}
+                    </div>
+                    <div>
+                      <label className="text-[12.5px] font-medium text-ink-soft block mb-1.5">
+                        ZIP code <span className="text-error">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="75062"
+                        maxLength={5}
+                        value={zip}
+                        onChange={(e) => setZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                        className={`w-full px-3.5 py-[11px] border rounded-md text-[14px] text-ink bg-surface outline-none transition-colors focus:border-accent ${errors.zip ? "border-error" : "border-line"}`}
+                      />
+                      {errors.zip && (
+                        <p className="text-[11.5px] text-error mt-1.5">
+                          {errors.zipMismatch ? "This ZIP code doesn't match the selected state." : "Enter a 5-digit ZIP."}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   {/* Resume */}

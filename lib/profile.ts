@@ -6,8 +6,10 @@ export type StoredProfile = {
   email: string;
   phone: string;
   avatarSrc: string | null;
+  street: string;
   city: string;
   state: string;
+  zip: string;
   locations: string[];
   skills: string[];
   roles: string[];
@@ -36,6 +38,22 @@ export function saveProfile(profile: StoredProfile) {
   if (!accounts.includes(email)) accounts.push(email);
   localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
   localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+}
+
+const JUST_REGISTERED_KEY = "waypoint_just_registered";
+
+export function markJustRegistered() {
+  if (typeof window === "undefined") return;
+  sessionStorage.setItem(JUST_REGISTERED_KEY, "1");
+}
+
+// Reads and clears the flag so the congratulations banner shows exactly once,
+// on the first home-page visit after signup.
+export function consumeJustRegistered(): boolean {
+  if (typeof window === "undefined") return false;
+  const flag = sessionStorage.getItem(JUST_REGISTERED_KEY) === "1";
+  if (flag) sessionStorage.removeItem(JUST_REGISTERED_KEY);
+  return flag;
 }
 
 export function getProfile(): StoredProfile | null {
