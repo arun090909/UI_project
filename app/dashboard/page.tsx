@@ -1,11 +1,20 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import { useProfile } from "@/lib/profile";
+import { useProfile, consumeJustRegistered } from "@/lib/profile";
 
 export default function DashboardPage() {
   const firstName = useProfile()?.firstName || null;
+  const [justRegistered, setJustRegistered] = useState(false);
+  const hasCheckedRef = useRef(false);
+
+  useEffect(() => {
+    if (hasCheckedRef.current) return;
+    hasCheckedRef.current = true;
+    setJustRegistered(consumeJustRegistered());
+  }, []);
 
   return (
     <div className="min-h-screen bg-paper">
@@ -17,7 +26,9 @@ export default function DashboardPage() {
         <div className="absolute right-[60px] top-[60px] w-[170px] h-[170px] rounded-full border border-white/[0.07]" />
         <div className="max-w-[1180px] mx-auto relative z-10">
           <p className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[#8FD9B8] mb-4">
-            Welcome back{firstName ? `, ${firstName}` : ""}
+            {justRegistered
+              ? `Congratulations — your account is set up${firstName ? `, ${firstName}` : ""}!`
+              : `Welcome back${firstName ? `, ${firstName}` : ""}`}
           </p>
           <h1 className="font-serif font-medium text-[40px] leading-[1.24] max-w-[620px] mb-4 tracking-[-0.01em]">
             The jobs and events actually worth your commute.

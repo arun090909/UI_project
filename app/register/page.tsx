@@ -2,19 +2,8 @@
 
 import { useState, useRef, KeyboardEvent } from "react";
 import Link from "next/link";
-import { saveProfile, emailExists } from "@/lib/profile";
-
-const US_STATES = [
-  "", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
-  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois",
-  "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
-  "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana",
-  "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York",
-  "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
-  "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah",
-  "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming",
-  "Washington, D.C.",
-];
+import { saveProfile, emailExists, markJustRegistered } from "@/lib/profile";
+import { US_STATES, zipMatchesState } from "@/lib/address";
 
 const ROLE_OPTIONS = [
   "Software developer", "QA / Testing", "Data analyst", "UI / UX designer",
@@ -24,14 +13,51 @@ const ROLE_OPTIONS = [
 const EMPLOYMENT_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
 const SKILL_SUGGESTIONS = [
-  "Java", "Spring Boot", "React", "MongoDB", "SQL",
-  "Customer service", "Sales", "Forklift certified",
+  // Software & IT
+  "Java", "Python", "JavaScript", "TypeScript", "Spring Boot", "React", "Angular",
+  "Node.js", "MongoDB", "SQL", "PostgreSQL", "AWS", "Azure", "Docker", "Kubernetes",
+  "Git", "REST APIs", "CI/CD", "Data analysis", "Machine learning",
+  // Healthcare
+  "CPR certified", "Patient care", "Phlebotomy", "Medical billing", "EHR/EMR systems",
+  "Nursing", "Clinical documentation", "First aid",
+  // Retail & sales
+  "Customer service", "Sales", "Cash handling", "Point of sale (POS)", "Merchandising",
+  "Inventory management", "Upselling", "Cold calling",
+  // Warehouse & logistics
+  "Forklift certified", "Inventory control", "Shipping & receiving", "Supply chain",
+  "OSHA certified", "Pallet jack operation", "Warehouse management systems (WMS)",
+  // Admin & office
+  "Microsoft Excel", "Microsoft Office", "Data entry", "Scheduling", "Bookkeeping",
+  "Payroll", "Office administration", "Written communication",
+  // Skilled trades
+  "Electrical wiring", "Plumbing", "HVAC", "Welding", "Carpentry", "CDL license",
+  // Hospitality & food service
+  "Food safety certified", "Barista", "Bartending", "Housekeeping", "Event planning",
+  // Marketing & design
+  "Social media marketing", "SEO", "Graphic design", "Adobe Photoshop", "Content writing",
+  // Finance & education
+  "Accounting", "Financial analysis", "QuickBooks", "Teaching", "Curriculum development",
 ];
 
 const LOCATION_SUGGESTIONS = [
-  "Irving, TX", "Dallas, TX", "Plano, TX", "Fort Worth, TX", "Arlington, TX",
-  "Frisco, TX", "McKinney, TX", "Denton, TX", "Garland, TX", "Grapevine, TX",
-  "Austin, TX", "Houston, TX", "San Antonio, TX", "Remote",
+  "Birmingham, AL", "Anchorage, AK", "Phoenix, AZ", "Little Rock, AR",
+  "Los Angeles, CA", "San Francisco, CA", "San Diego, CA", "Denver, CO",
+  "Hartford, CT", "Wilmington, DE", "Washington, DC", "Miami, FL", "Orlando, FL",
+  "Tampa, FL", "Atlanta, GA", "Honolulu, HI", "Boise, ID", "Chicago, IL",
+  "Indianapolis, IN", "Des Moines, IA", "Wichita, KS", "Louisville, KY",
+  "New Orleans, LA", "Portland, ME", "Baltimore, MD", "Boston, MA", "Detroit, MI",
+  "Minneapolis, MN", "Jackson, MS", "Kansas City, MO", "Billings, MT",
+  "Omaha, NE", "Las Vegas, NV", "Manchester, NH", "Newark, NJ", "Jersey City, NJ",
+  "Albuquerque, NM", "New York, NY", "Brooklyn, NY", "Buffalo, NY",
+  "Charlotte, NC", "Raleigh, NC", "Fargo, ND", "Columbus, OH", "Cleveland, OH",
+  "Oklahoma City, OK", "Portland, OR", "Philadelphia, PA", "Pittsburgh, PA",
+  "Providence, RI", "Charleston, SC", "Sioux Falls, SD", "Nashville, TN",
+  "Memphis, TN", "Irving, TX", "Dallas, TX", "Plano, TX", "Fort Worth, TX",
+  "Arlington, TX", "Frisco, TX", "McKinney, TX", "Denton, TX", "Garland, TX",
+  "Grapevine, TX", "Austin, TX", "Houston, TX", "San Antonio, TX",
+  "Salt Lake City, UT", "Burlington, VT", "Richmond, VA", "Virginia Beach, VA",
+  "Seattle, WA", "Spokane, WA", "Charleston, WV", "Milwaukee, WI",
+  "Cheyenne, WY", "Remote",
 ];
 
 type FormData = {
@@ -41,7 +67,7 @@ type FormData = {
   salaryMin: string; salaryMax: string;
 };
 
-type Errors = Partial<Record<keyof FormData | "skills" | "roles", boolean>>;
+type Errors = Partial<Record<keyof FormData | "skills" | "roles" | "zipMismatch", boolean>>;
 
 function passwordStrength(pw: string): { label: string; pct: number; barColor: string; textColor: string } {
   if (!pw) return { label: "", pct: 0, barColor: "", textColor: "" };
@@ -99,9 +125,12 @@ export default function RegisterPage() {
 
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
+  const [showSkillSuggestions, setShowSkillSuggestions] = useState(false);
+  const [invalidSkillAttempt, setInvalidSkillAttempt] = useState(false);
 
   const [locations, setLocations] = useState<string[]>([]);
   const [locInput, setLocInput] = useState("");
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
 
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -132,17 +161,42 @@ export default function RegisterPage() {
     reader.readAsDataURL(file);
   }
 
+  // Only known skills (case-insensitive exact match) may be added — free-form
+  // text is rejected so junk/invalid entries can't slip into the list.
   function addSkill(v: string) {
     v = v.trim();
-    if (!v || skills.map((s) => s.toLowerCase()).includes(v.toLowerCase())) return;
-    setSkills((prev) => [...prev, v]);
+    if (!v) return;
+    const match = SKILL_SUGGESTIONS.find((s) => s.toLowerCase() === v.toLowerCase());
+    if (!match || skills.map((s) => s.toLowerCase()).includes(match.toLowerCase())) {
+      setInvalidSkillAttempt(true);
+      return;
+    }
+    setSkills((prev) => [...prev, match]);
+    setInvalidSkillAttempt(false);
   }
+
+  const filteredSkillSuggestions = (() => {
+    const query = skillInput.trim().toLowerCase();
+    if (!query) return [];
+    return SKILL_SUGGESTIONS
+      .filter((s) =>
+        s.toLowerCase().includes(query) &&
+        !skills.map((k) => k.toLowerCase()).includes(s.toLowerCase())
+      )
+      .sort((a, b) => {
+        const aStarts = a.toLowerCase().startsWith(query) ? 0 : 1;
+        const bStarts = b.toLowerCase().startsWith(query) ? 0 : 1;
+        return aStarts !== bStarts ? aStarts - bStarts : a.localeCompare(b);
+      });
+  })();
 
   function handleSkillKey(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       addSkill(skillInput);
-      setSkillInput("");
+      if (SKILL_SUGGESTIONS.some((s) => s.toLowerCase() === skillInput.trim().toLowerCase())) {
+        setSkillInput("");
+      }
     }
     if (e.key === "Backspace" && !skillInput && skills.length) {
       setSkills((prev) => prev.slice(0, -1));
@@ -154,6 +208,13 @@ export default function RegisterPage() {
     if (!v || locations.length >= 3 || locations.map((s) => s.toLowerCase()).includes(v.toLowerCase())) return;
     setLocations((prev) => [...prev, v]);
   }
+
+  const filteredLocationSuggestions = locInput.trim()
+    ? LOCATION_SUGGESTIONS.filter((s) =>
+        s.toLowerCase().includes(locInput.trim().toLowerCase()) &&
+        !locations.map((l) => l.toLowerCase()).includes(s.toLowerCase())
+      ).slice(0, 8)
+    : [];
 
   function handleLocKey(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" || e.key === ",") {
@@ -196,7 +257,12 @@ export default function RegisterPage() {
     if (!form.street.trim()) e.street = true;
     if (!form.city.trim()) e.city = true;
     if (!form.state) e.state = true;
-    if (!/^\d{5}$/.test(form.zip)) e.zip = true;
+    if (!/^\d{5}$/.test(form.zip)) {
+      e.zip = true;
+    } else if (form.state && !zipMatchesState(form.zip, form.state)) {
+      e.zip = true;
+      e.zipMismatch = true;
+    }
     if (skills.length < 3) e.skills = true;
     if (selectedRoles.length === 0) e.roles = true;
     setErrors(e);
@@ -217,12 +283,15 @@ export default function RegisterPage() {
       email: form.email.trim(),
       phone: form.phone.trim(),
       avatarSrc,
+      street: form.street.trim(),
       city: form.city.trim(),
       state: form.state,
+      zip: form.zip,
       locations,
       skills,
       roles: selectedRoles,
     });
+    markJustRegistered();
     setSubmitted(true);
   }
 
@@ -387,7 +456,10 @@ export default function RegisterPage() {
                     ))}
                   </select>
                 </FieldWrap>
-                <FieldWrap label="ZIP code" required error={errors.zip} errorMsg="Enter a 5-digit ZIP.">
+                <FieldWrap
+                  label="ZIP code" required error={errors.zip}
+                  errorMsg={errors.zipMismatch ? "This ZIP code doesn't match the selected state." : "Enter a 5-digit ZIP."}
+                >
                   <input type="text" placeholder="75062" maxLength={5} value={form.zip} onChange={(e) => setField("zip", e.target.value)} className={inputCls(errors.zip)} />
                 </FieldWrap>
               </div>
@@ -410,29 +482,31 @@ export default function RegisterPage() {
                   id="locInput"
                   type="text"
                   value={locInput}
-                  onChange={(e) => setLocInput(e.target.value)}
+                  onChange={(e) => { setLocInput(e.target.value); setShowLocationSuggestions(true); }}
                   onKeyDown={handleLocKey}
-                  placeholder={locations.length >= 3 ? "Limit reached — remove one to add another" : "Type a city and press Enter (up to 3)"}
+                  onFocus={() => setShowLocationSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowLocationSuggestions(false), 120)}
+                  placeholder={locations.length >= 3 ? "Limit reached — remove one to add another" : "Type a city, any state (up to 3)"}
                   disabled={locations.length >= 3}
                   className="border-none outline-none flex-1 min-w-[180px] text-[13.5px] bg-transparent text-ink py-1 disabled:cursor-not-allowed"
                 />
               </div>
-              <select
-                value=""
-                onChange={(e) => addLocation(e.target.value)}
-                disabled={locations.length >= 3}
-                className={`${inputCls(false)} mt-2.5 disabled:cursor-not-allowed disabled:opacity-60`}
-              >
-                <option value="" disabled>
-                  {locations.length >= 3 ? "Limit reached — remove one to add another" : "Choose a city, state to add"}
-                </option>
-                {LOCATION_SUGGESTIONS.map((s) => (
-                  <option key={s} value={s} disabled={locations.map((l) => l.toLowerCase()).includes(s.toLowerCase())}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <p className="text-[11.5px] text-muted mt-1.5">Optional — jobs in these cities are boosted in your matches alongside your home address.</p>
+              {showLocationSuggestions && locations.length < 3 && filteredLocationSuggestions.length > 0 && (
+                <div className="mt-1.5 border border-line rounded-md bg-surface overflow-hidden">
+                  {filteredLocationSuggestions.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => { addLocation(s); setLocInput(""); }}
+                      className="w-full text-left px-3.5 py-2 text-[13px] text-ink hover:bg-accent-soft hover:text-accent transition-colors"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="text-[11.5px] text-muted mt-1.5">Optional — jobs in these cities are boosted in your matches alongside your home address. Start typing to search cities across every state.</p>
             </SectionBlock>
 
             {/* ── Skills ── */}
@@ -454,25 +528,35 @@ export default function RegisterPage() {
                   id="skillInput"
                   type="text"
                   value={skillInput}
-                  onChange={(e) => setSkillInput(e.target.value)}
+                  onChange={(e) => { setSkillInput(e.target.value); setShowSkillSuggestions(true); setInvalidSkillAttempt(false); }}
                   onKeyDown={handleSkillKey}
+                  onFocus={() => setShowSkillSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSkillSuggestions(false), 120)}
                   placeholder="Type a skill and press Enter"
                   className="border-none outline-none flex-1 min-w-[180px] text-[13.5px] bg-transparent text-ink py-1"
                 />
               </div>
               {errors.skills && <p className="text-[11.5px] text-error mt-1.5">Add at least 3 skills so matching can work.</p>}
-              <select
-                value=""
-                onChange={(e) => addSkill(e.target.value)}
-                className={`${inputCls(false)} mt-2.5`}
-              >
-                <option value="" disabled>Choose a suggested skill to add</option>
-                {SKILL_SUGGESTIONS.map((s) => (
-                  <option key={s} value={s} disabled={skills.map((k) => k.toLowerCase()).includes(s.toLowerCase())}>
-                    {s}
-                  </option>
-                ))}
-              </select>
+              {invalidSkillAttempt && (
+                <p className="text-[11.5px] text-error mt-1.5">
+                  &ldquo;{skillInput.trim()}&rdquo; isn&apos;t a recognized skill — pick one from the suggestions below.
+                </p>
+              )}
+              {showSkillSuggestions && filteredSkillSuggestions.length > 0 && (
+                <div className="mt-1.5 border border-line rounded-md bg-surface overflow-y-auto max-h-[240px]">
+                  {filteredSkillSuggestions.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => { addSkill(s); setSkillInput(""); }}
+                      className="w-full text-left px-3.5 py-2 text-[13px] text-ink hover:bg-accent-soft hover:text-accent transition-colors"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
             </SectionBlock>
 
             {/* ── Interested roles ── */}
@@ -501,15 +585,15 @@ export default function RegisterPage() {
               <div className="grid items-center gap-2.5 max-w-[420px]" style={{ gridTemplateColumns: "1fr auto 1fr" }}>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-[13.5px]">$</span>
-                  <input type="text" placeholder="45,000" value={form.salaryMin}
-                    onChange={(e) => setField("salaryMin", e.target.value)}
+                  <input type="text" inputMode="numeric" placeholder="45,000" value={form.salaryMin}
+                    onChange={(e) => setField("salaryMin", e.target.value.replace(/[^0-9,]/g, ""))}
                     className="w-full pl-6 pr-3 py-[11px] border border-line rounded-md text-[14px] text-ink bg-surface outline-none focus:border-accent transition-colors" />
                 </div>
                 <span className="text-muted text-[13px]">to</span>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-[13.5px]">$</span>
-                  <input type="text" placeholder="65,000" value={form.salaryMax}
-                    onChange={(e) => setField("salaryMax", e.target.value)}
+                  <input type="text" inputMode="numeric" placeholder="65,000" value={form.salaryMax}
+                    onChange={(e) => setField("salaryMax", e.target.value.replace(/[^0-9,]/g, ""))}
                     className="w-full pl-6 pr-3 py-[11px] border border-line rounded-md text-[14px] text-ink bg-surface outline-none focus:border-accent transition-colors" />
                 </div>
               </div>
