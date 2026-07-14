@@ -109,7 +109,7 @@ export default function CreateAccountPage() {
       <section className="signup-card account-reference-card">
         <aside className="brand-panel account-reference-brand" aria-label="Waypoint employer benefits">
           <div>
-            <Link className="logo" href="/create-account">
+            <Link className="logo" href="/employer-create-account">
               <span className="logo-mark" />
               <span>Waypoint</span>
             </Link>
@@ -269,3 +269,4 @@ async function validateAddress(address: {
     };
   }
 }
+
