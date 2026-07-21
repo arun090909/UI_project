@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Waypoint — Home dashboard</title>
+<style>
+  body{margin:0;padding:30px 16px;background:#f4f2eb;font-family:Inter,Arial,sans-serif;}
+  .navlink:hover{color:#14151a !important;}
+  .getcard:hover{border-color:#1d5c46 !important;}
+  .icon{display:inline-flex;flex-shrink:0;}
+  .avatar-wrap{position:relative;}
+  .avatar-btn{width:26px;height:26px;border-radius:50%;background:#14151a;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+  .dropdown{display:none;position:absolute;top:34px;right:0;background:#fff;border:1px solid #eceae1;border-radius:10px;box-shadow:0 12px 28px rgba(20,21,26,.12);min-width:190px;padding:6px;z-index:10;}
+  .dropdown.open{display:block;}
+  .dropdown-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;font-size:13px;color:#3a392f;cursor:pointer;white-space:nowrap;}
+  .dropdown-item:hover{background:#f4f2eb;}
+  .dropdown-item.danger{color:#9c3a2e;}
+  .dropdown-sep{height:1px;background:#eceae1;margin:5px 2px;}
+</style>
+</head>
+<body>
+
+<div style="border-radius:12px;overflow:hidden;border:1px solid #e5e2d9;max-width:920px;margin:0 auto;background:#f4f2eb;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 28px;background:#ffffff;border-bottom:1px solid #eceae1;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="icon"><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5" fill="none" stroke="#14151a" stroke-width="1.3"/><circle cx="10" cy="10" r="3" fill="#14151a"/></svg></span>
+      <span style="font-size:15px;font-weight:500;color:#14151a;">Waypoint</span>
+    </div>
+    <div style="display:flex;gap:22px;font-size:13px;">
+      <span data-nav="home" class="navlink" style="color:#14151a;font-weight:500;cursor:pointer;">Home</span>
+      <span data-nav="careers" class="navlink" style="color:#6b6a63;cursor:pointer;">Careers</span>
+      <span data-nav="events" class="navlink" style="color:#6b6a63;cursor:pointer;">Events</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="icon" style="cursor:pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 21h4"/></svg></span>
+      <div class="avatar-wrap">
+        <button type="button" class="avatar-btn" id="avatarBtn">JT</button>
+        <div class="dropdown" id="profileDropdown">
+          <div class="dropdown-item" data-action="profile">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5"/></svg>
+            Profile
+          </div>
+          <div class="dropdown-item" data-action="password">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Change password
+          </div>
+          <div class="dropdown-item" data-action="contact">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5A8.3 8.3 0 0 1 8 19.5L3 21l1.5-5A8.3 8.3 0 0 1 3.5 12 8.5 8.5 0 0 1 12 3.5 8.5 8.5 0 0 1 21 12z"/></svg>
+            Contact us
+          </div>
+          <div class="dropdown-sep"></div>
+          <div class="dropdown-item danger" data-action="logout">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Logout
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#14151a;padding:2.5rem 2.5rem;color:#f4f2eb;">
+    <p style="font-size:12px;letter-spacing:0.06em;color:#9b998f;margin:0 0 10px;text-transform:uppercase;">Welcome back, Jordan</p>
+    <h1 style="font-size:26px;font-weight:500;font-family:Georgia,serif;margin:0 0 12px;max-width:480px;">The jobs and events actually worth your commute.</h1>
+    <p style="font-size:13px;color:#b4b2a9;max-width:460px;line-height:1.6;margin:0;">Waypoint matches you to roles and career events based on your skills, not just your keywords. New matches land here every week.</p>
+  </div>
+
+  <div style="padding:2.25rem 2.5rem;">
+    <p style="font-size:11px;letter-spacing:0.06em;color:#9b998f;margin:0 0 10px;text-transform:uppercase;">About Waypoint</p>
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:2rem;margin-bottom:2rem;">
+      <div>
+        <h2 style="font-size:18px;font-weight:500;color:#14151a;font-family:Georgia,serif;margin:0 0 10px;">Built to shorten the distance between good people and good jobs.</h2>
+        <p style="font-size:13px;color:#3a392f;line-height:1.7;margin:0 0 10px;">Waypoint started with a simple observation: most job boards optimize for volume, not fit. We built a platform that ranks opportunities by real skill match and real distance, and pairs it with local hiring events.</p>
+        <p style="font-size:13px;color:#3a392f;line-height:1.7;margin:0;">Employers post once and reach candidates who are actually qualified and nearby. Job seekers see fewer, better matches instead of an endless scroll.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:14px;">
+          <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
+          <p style="font-size:13px;font-weight:500;color:#14151a;margin:8px 0 2px;">Local-first matching</p><p style="font-size:11px;color:#6b6a63;margin:0;">Ranked by real commute distance.</p>
+        </div>
+        <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:14px;">
+          <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <p style="font-size:13px;font-weight:500;color:#14151a;margin:8px 0 2px;">Verified employers</p><p style="font-size:11px;color:#6b6a63;margin:0;">Every company is reviewed.</p>
+        </div>
+        <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:14px;">
+          <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+          <p style="font-size:13px;font-weight:500;color:#14151a;margin:8px 0 2px;">In-person events</p><p style="font-size:11px;color:#6b6a63;margin:0;">Career fairs, not online listings.</p>
+        </div>
+        <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:14px;">
+          <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></span>
+          <p style="font-size:13px;font-weight:500;color:#14151a;margin:8px 0 2px;">Skill-based ranking</p><p style="font-size:11px;color:#6b6a63;margin:0;">Matches improve as you apply.</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;letter-spacing:0.06em;color:#9b998f;margin:0 0 10px;text-transform:uppercase;">Get started</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:2rem;">
+      <div class="getcard" data-nav="careers" style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:16px;cursor:pointer;">
+        <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+        <p style="font-size:14px;font-weight:500;color:#14151a;margin:10px 0 4px;">Browse careers</p><p style="font-size:12px;color:#6b6a63;margin:0 0 8px;">Search open roles and events by title, distance, and job type.</p><span style="font-size:12px;color:#1d5c46;">Explore &#8594;</span>
+      </div>
+      <div class="getcard" data-nav="profile" style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:16px;cursor:pointer;">
+        <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg></span>
+        <p style="font-size:14px;font-weight:500;color:#14151a;margin:10px 0 4px;">Track applications</p><p style="font-size:12px;color:#6b6a63;margin:0 0 8px;">See status updates on every role you've applied to, in one place.</p><span style="font-size:12px;color:#1d5c46;">View applications &#8594;</span>
+      </div>
+      <div class="getcard" data-nav="profile" style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:16px;cursor:pointer;">
+        <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5"/></svg></span>
+        <p style="font-size:14px;font-weight:500;color:#14151a;margin:10px 0 4px;">Complete your profile</p><p style="font-size:12px;color:#6b6a63;margin:0 0 8px;">Add skills and a resume so matches get sharper over time.</p><span style="font-size:12px;color:#1d5c46;">Edit profile &#8594;</span>
+      </div>
+    </div>
+
+    <p style="font-size:11px;letter-spacing:0.06em;color:#9b998f;margin:0 0 14px;text-transform:uppercase;">How Waypoint works</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div><div style="width:22px;height:22px;border-radius:50%;background:#e1ecda;color:#3b6d11;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">1</div><p style="font-size:13px;font-weight:500;color:#14151a;margin:0 0 4px;">Tell us your skills</p><p style="font-size:12px;color:#6b6a63;margin:0;">Add skills and resume once, no separate application for every role.</p></div>
+      <div><div style="width:22px;height:22px;border-radius:50%;background:#e1ecda;color:#3b6d11;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">2</div><p style="font-size:13px;font-weight:500;color:#14151a;margin:0 0 4px;">Get ranked matches</p><p style="font-size:12px;color:#6b6a63;margin:0;">We surface roles and events by fit and by distance from your zip code.</p></div>
+      <div><div style="width:22px;height:22px;border-radius:50%;background:#e1ecda;color:#3b6d11;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">3</div><p style="font-size:13px;font-weight:500;color:#14151a;margin:0 0 4px;">Apply or show up</p><p style="font-size:12px;color:#6b6a63;margin:0;">Apply in a click, or register for a nearby event to meet employers directly.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function sendPrompt(text){ alert('Prototype navigation \u2192 ' + text); }
+
+  var prompts = {
+    careers: 'Show me the careers search page with job listings',
+    events: 'Show me the events list and event detail page',
+    profile: 'Show me the profile page',
+    contact: 'Show me the contact us page',
+    home: 'Show me the home dashboard'
+  };
+  document.querySelectorAll('.navlink, .getcard').forEach(function(el){
+    el.addEventListener('click', function(){
+      var target = el.getAttribute('data-nav');
+      if (target && target !== 'home' && prompts[target]) { sendPrompt(prompts[target]); }
+    });
+  });
+
+  var avatarBtn = document.getElementById('avatarBtn');
+  var dropdown = document.getElementById('profileDropdown');
+  avatarBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+  });
+  document.addEventListener('click', function(){ dropdown.classList.remove('open'); });
+  dropdown.addEventListener('click', function(e){ e.stopPropagation(); });
+
+  document.querySelectorAll('.dropdown-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      var action = item.getAttribute('data-action');
+      dropdown.classList.remove('open');
+      if (action === 'profile') sendPrompt(prompts.profile);
+      else if (action === 'contact') sendPrompt(prompts.contact);
+      else if (action === 'password') sendPrompt('Show me the change password page');
+      else if (action === 'logout') sendPrompt('Show me the sign in page');
+    });
+  });
+})();
+</script>
+</body>
+</html>
