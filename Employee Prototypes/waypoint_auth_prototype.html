@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Waypoint — Auth prototype v5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;padding:40px 20px;background:#f4f2eb;font-family:Inter,sans-serif;}
+  .req{color:#9c3a2e;}
+  .chip{font-size:12px;border:1px solid #d8d5c9;border-radius:14px;padding:4px 6px 4px 10px;color:#3a392f;background:#fff;display:inline-flex;align-items:center;gap:6px;}
+  .chip button{border:none;background:none;color:#9b998f;font-size:13px;font-weight:600;cursor:pointer;line-height:1;padding:0;}
+  .chip button:hover{color:#9c3a2e;}
+  .addrow{display:flex;gap:8px;margin-bottom:8px;}
+  .addrow select{flex:1;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;font-size:13.5px;background:#fff;}
+  .addrow button{padding:8px 16px;border:1px solid #1d5c46;background:#1d5c46;color:#fff;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;}
+  .addrow button:hover{opacity:.92;}
+  .chipwrap{display:flex;gap:6px;flex-wrap:wrap;min-height:26px;margin-bottom:6px;}
+  .money{position:relative;}
+  .money span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13.5px;color:#6b6a63;}
+  .money input{padding-left:22px !important;}
+</style>
+</head>
+<body>
+
+<div style="display:flex;min-height:400px;border-radius:12px;overflow:hidden;border:1px solid #e5e2d9;max-width:920px;margin:0 auto;font-family:Inter,sans-serif;background:#fff;">
+  <div style="width:34%;background:#14151a;color:#f4f2eb;padding:2.25rem 2rem;display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:2.5rem;">
+      <svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5" fill="none" stroke="#f4f2eb" stroke-width="1.3"/><circle cx="10" cy="10" r="3" fill="#f4f2eb"/></svg>
+      <span style="font-size:16px;font-weight:500;color:#f4f2eb;">Waypoint</span>
+    </div>
+    <h1 id="hl-headline" style="font-size:24px;font-weight:500;line-height:1.3;margin:0 0 2rem;color:#f4f2eb;font-family:Georgia,serif;">The jobs and events actually worth your commute.</h1>
+    <ul id="hl-features" style="list-style:none;padding:0;margin:0 0 1.25rem;display:flex;flex-direction:column;gap:10px;">
+      <li style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#e6e4da;line-height:1.4;"><span style="color:#7fb89e;flex-shrink:0;">✓</span>Personalized job matches based on your skills</li>
+      <li style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#e6e4da;line-height:1.4;"><span style="color:#7fb89e;flex-shrink:0;">✓</span>Verified employers, no fake postings</li>
+      <li style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#e6e4da;line-height:1.4;"><span style="color:#7fb89e;flex-shrink:0;">✓</span>One click to register for hiring events near you</li>
+    </ul>
+    <p id="hl-caption" style="font-size:13px;color:#9b998f;line-height:1.6;margin-top:auto;">One account, two portals. Employers post once; employees see only what is relevant to their skills and their zip code.</p>
+  </div>
+  <div style="width:66%;background:#ffffff;padding:2.25rem 2.5rem;max-height:720px;overflow-y:auto;">
+    <div style="display:flex;background:#f4f2eb;border-radius:8px;padding:3px;margin-bottom:1.5rem;width:220px;">
+      <button type="button" data-mode="signin" class="modebtn" style="flex:1;border:none;padding:7px 0;font-size:13px;border-radius:6px;background:#ffffff;font-weight:500;color:#14151a;cursor:pointer;">Sign in</button>
+      <button type="button" data-mode="signup" class="modebtn" style="flex:1;border:none;padding:7px 0;font-size:13px;border-radius:6px;background:transparent;color:#6b6a63;cursor:pointer;">Sign up</button>
+    </div>
+    <h2 id="form-title" style="margin:0 0 4px;color:#14151a;font-family:Georgia,serif;font-weight:400;font-size:22px;">Welcome back</h2>
+    <p id="form-sub" style="font-size:13px;color:#6b6a63;margin:0 0 1.5rem;">Sign in to continue to your dashboard.</p>
+    <div style="display:flex;background:#f4f2eb;border-radius:8px;padding:3px;margin-bottom:1.5rem;width:220px;">
+      <button type="button" data-role="employee" class="rolebtn" style="flex:1;border:none;padding:7px 0;font-size:13px;border-radius:6px;background:#ffffff;font-weight:500;color:#14151a;cursor:pointer;">Employee</button>
+      <button type="button" data-role="employer" class="rolebtn" style="flex:1;border:none;padding:7px 0;font-size:13px;border-radius:6px;background:transparent;color:#6b6a63;cursor:pointer;">Employer</button>
+    </div>
+
+    <!-- ===================== SIGN IN ===================== -->
+    <div id="signin-fields">
+      <label style="font-size:13px;color:#3a392f;">Email <span class="req">*</span></label>
+      <input type="email" placeholder="name@company.com" style="width:100%;margin:4px 0 1rem;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/>
+      <label style="font-size:13px;color:#3a392f;">Password <span class="req">*</span></label>
+      <input type="password" placeholder="password" style="width:100%;margin:4px 0 0.5rem;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+        <label style="font-size:12px;color:#6b6a63;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="width:auto;"/> Remember me</label>
+        <a href="#" id="forgot-link" style="font-size:12px;color:#14151a;">Forgot password?</a>
+      </div>
+      <button type="button" id="signin-btn" style="width:100%;background:#1d5c46;color:#fff;border:none;padding:10px 0;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;">Sign in</button>
+    </div>
+
+    <!-- ===================== SIGN UP — EMPLOYEE ===================== -->
+    <div id="signup-employee" style="display:none;">
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 12px;">Profile picture</h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#f4f2eb;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#14151a;">JT</div>
+        <button type="button" style="flex:1;padding:8px 0;border:1px solid #d8d5c9;border-radius:6px;background:#fff;font-size:13px;color:#3a392f;cursor:pointer;">Add photo</button>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 12px;">Personal info</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div><label style="font-size:12px;color:#3a392f;">First name <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Last name <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Email <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Phone</label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Password <span class="req">*</span></label><input type="password" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Re-enter password <span class="req">*</span></label><input type="password" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 12px;">Address</h3>
+      <div style="margin-bottom:10px;"><label style="font-size:12px;color:#3a392f;">Street address <span class="req">*</span></label><input placeholder="2201 N MacArthur Blvd" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div><label style="font-size:12px;color:#3a392f;">City <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">State <span class="req">*</span></label>
+          <select id="addr-state" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;background:#fff;">
+            <option value="">Select state</option>
+          </select>
+        </div>
+        <div><label style="font-size:12px;color:#3a392f;">ZIP code <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 8px;">Preferred locations</h3>
+      <p style="font-size:11px;color:#9b998f;margin:0 0 8px;">Pick up to 3 states.</p>
+      <div class="addrow">
+        <select id="loc-state-select"><option value="">Select a state to add</option></select>
+        <button type="button" id="loc-add-btn">Add</button>
+      </div>
+      <div class="chipwrap" id="loc-chipwrap"></div>
+
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:16px 0 8px;">Skills</h3>
+      <p style="font-size:11px;color:#9b998f;margin:0 0 8px;">Add at least 3 skills.</p>
+      <div class="addrow">
+        <select id="skill-select">
+          <option value="">Select a skill to add</option>
+          <option>Java</option><option>Spring Boot</option><option>React</option><option>JavaScript</option>
+          <option>TypeScript</option><option>MongoDB</option><option>SQL</option><option>Python</option>
+          <option>AWS</option><option>Node.js</option><option>Customer service</option><option>Sales</option>
+          <option>Excel</option><option>Project management</option><option>Forklift certified</option>
+        </select>
+        <button type="button" id="skill-add-btn">Add</button>
+      </div>
+      <div class="chipwrap" id="skill-chipwrap"></div>
+
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:16px 0 8px;">Interested roles</h3>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <span class="chip" style="cursor:pointer;">Software developer</span><span class="chip" style="cursor:pointer;">QA / Testing</span><span class="chip" style="cursor:pointer;">Data analyst</span><span class="chip" style="cursor:pointer;">UI / UX designer</span>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 12px;">Salary range</h3>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-bottom:1.25rem;max-width:340px;">
+        <div class="money"><span>$</span><input placeholder="45,000" style="width:100%;padding:8px 10px 8px 22px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <span style="font-size:12.5px;color:#6b6a63;">to</span>
+        <div class="money"><span>$</span><input placeholder="65,000" style="width:100%;padding:8px 10px 8px 22px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+      </div>
+      <p style="font-size:11px;color:#9b998f;margin:-12px 0 1.25rem;">Expected annual salary. Optional — only jobs inside this range get boosted in your matches.</p>
+
+      <button type="button" id="create-employee-btn" style="width:100%;background:#1d5c46;color:#fff;border:none;padding:10px 0;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;">Create account</button>
+    </div>
+
+    <!-- ===================== SIGN UP — EMPLOYER ===================== -->
+    <div id="signup-employer" style="display:none;">
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 12px;">Company info</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div><label style="font-size:12px;color:#3a392f;">Company name <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Company size <span class="req">*</span></label>
+          <select style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;background:#fff;">
+            <option value="">Select size</option>
+            <option>1–10 employees</option>
+            <option>11–50 employees</option>
+            <option>51–200 employees</option>
+            <option>201–1000 employees</option>
+            <option>1000+ employees</option>
+          </select>
+        </div>
+        <div><label style="font-size:12px;color:#3a392f;">Company email <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Phone</label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Password <span class="req">*</span></label><input type="password" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">Re-enter password <span class="req">*</span></label><input type="password" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+      </div>
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 12px;">Company address</h3>
+      <div style="margin-bottom:10px;"><label style="font-size:12px;color:#3a392f;">Street address <span class="req">*</span></label><input placeholder="2201 N MacArthur Blvd" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div><label style="font-size:12px;color:#3a392f;">City <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+        <div><label style="font-size:12px;color:#3a392f;">State <span class="req">*</span></label>
+          <select id="er-addr-state" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;background:#fff;">
+            <option value="">Select state</option>
+          </select>
+        </div>
+        <div><label style="font-size:12px;color:#3a392f;">ZIP code <span class="req">*</span></label><input style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;"/></div>
+      </div>
+      <h3 style="font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 8px;">Hiring for</h3>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <span class="chip" style="cursor:pointer;">Engineering</span><span class="chip" style="cursor:pointer;">Design</span><span class="chip" style="cursor:pointer;">Sales</span><span class="chip" style="cursor:pointer;">Operations</span><span class="chip" style="cursor:pointer;">Healthcare</span>
+      </div>
+      <button type="button" id="create-employer-btn" style="width:100%;background:#1d5c46;color:#fff;border:none;padding:10px 0;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;">Create employer account</button>
+    </div>
+
+    <p style="font-size:12px;color:#6b6a63;text-align:center;margin-top:1.25rem;">
+      <span id="switch-text">New here?</span> <a href="#" id="switch-link" style="color:#14151a;">Create an account</a>
+    </p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming","Washington, D.C."];
+
+  function fillStates(sel){
+    STATES.forEach(function(s){
+      var o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o);
+    });
+  }
+  fillStates(document.getElementById('addr-state'));
+  fillStates(document.getElementById('er-addr-state'));
+  fillStates(document.getElementById('loc-state-select'));
+
+  // ---- Preferred locations (max 3, dropdown + add, removable chips) ----
+  var locs = [];
+  var locWrap = document.getElementById('loc-chipwrap');
+  var locSelect = document.getElementById('loc-state-select');
+  function renderLocs(){
+    locWrap.innerHTML = '';
+    locs.forEach(function(s, i){
+      var chip = document.createElement('span'); chip.className = 'chip';
+      chip.innerHTML = s + ' <button type="button" data-i="' + i + '">&times;</button>';
+      locWrap.appendChild(chip);
+    });
+    locSelect.disabled = locs.length >= 3;
+  }
+  document.getElementById('loc-add-btn').addEventListener('click', function(){
+    var v = locSelect.value;
+    if (!v || locs.length >= 3 || locs.indexOf(v) !== -1) return;
+    locs.push(v); locSelect.value = ''; renderLocs();
+  });
+  locWrap.addEventListener('click', function(e){
+    if (e.target.tagName === 'BUTTON') { locs.splice(+e.target.getAttribute('data-i'), 1); renderLocs(); }
+  });
+  renderLocs();
+
+  // ---- Skills (dropdown + add, removable chips) ----
+  var skills = [];
+  var skillWrap = document.getElementById('skill-chipwrap');
+  var skillSelect = document.getElementById('skill-select');
+  function renderSkills(){
+    skillWrap.innerHTML = '';
+    skills.forEach(function(s, i){
+      var chip = document.createElement('span'); chip.className = 'chip';
+      chip.innerHTML = s + ' <button type="button" data-i="' + i + '">&times;</button>';
+      skillWrap.appendChild(chip);
+    });
+  }
+  document.getElementById('skill-add-btn').addEventListener('click', function(){
+    var v = skillSelect.value;
+    if (!v || skills.indexOf(v) !== -1) return;
+    skills.push(v); skillSelect.value = ''; renderSkills();
+  });
+  skillWrap.addEventListener('click', function(e){
+    if (e.target.tagName === 'BUTTON') { skills.splice(+e.target.getAttribute('data-i'), 1); renderSkills(); }
+  });
+  renderSkills();
+
+  // ---- selectable role/hiring-for pill chips (toggle look) ----
+  document.querySelectorAll('#signup-employee .chip[style*="cursor:pointer"], #signup-employer .chip[style*="cursor:pointer"]').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var on = chip.getAttribute('data-on') === '1';
+      chip.setAttribute('data-on', on ? '0' : '1');
+      chip.style.background = on ? '#fff' : '#1d5c46';
+      chip.style.color = on ? '#3a392f' : '#fff';
+      chip.style.borderColor = on ? '#d8d5c9' : '#1d5c46';
+    });
+  });
+
+  // ---- mode / role switching (same as v4) ----
+  var currentRole = 'employee';
+  var currentMode = 'signin';
+
+  function setMode(mode){
+    currentMode = mode;
+    var signin = mode === 'signin';
+    document.getElementById('signin-fields').style.display = signin ? 'block' : 'none';
+    document.getElementById('signup-employee').style.display = (!signin && currentRole === 'employee') ? 'block' : 'none';
+    document.getElementById('signup-employer').style.display = (!signin && currentRole === 'employer') ? 'block' : 'none';
+    document.querySelectorAll('.modebtn').forEach(function(btn){
+      var active = btn.getAttribute('data-mode') === mode;
+      btn.style.background = active ? '#ffffff' : 'transparent';
+      btn.style.fontWeight = active ? '500' : '400';
+      btn.style.color = active ? '#14151a' : '#6b6a63';
+    });
+    document.getElementById('form-title').textContent = signin ? 'Welcome back' : 'Create your account';
+    document.getElementById('form-sub').textContent = signin
+      ? 'Sign in to continue to your dashboard.'
+      : (currentRole === 'employee' ? 'Four quick sections, and your matches start working.' : 'Company details first, then post your first opening in minutes.');
+    document.getElementById('switch-text').textContent = signin ? 'New here?' : 'Already have an account?';
+    document.getElementById('switch-link').textContent = signin ? 'Create an account' : 'Sign in';
+  }
+
+  function setRole(role){
+    currentRole = role;
+    var emp = role === 'employee';
+    document.querySelectorAll('.rolebtn').forEach(function(btn){
+      var active = btn.getAttribute('data-role') === role;
+      btn.style.background = active ? '#ffffff' : 'transparent';
+      btn.style.fontWeight = active ? '500' : '400';
+      btn.style.color = active ? '#14151a' : '#6b6a63';
+    });
+    document.getElementById('hl-headline').textContent = emp
+      ? 'The jobs and events actually worth your commute.'
+      : 'Reach the right candidates, not just more of them.';
+    document.getElementById('hl-caption').textContent = emp
+      ? 'One account, two portals. Employers post once; employees see only what is relevant to their skills and their zip code.'
+      : 'Post once, meet qualified candidates nearby, and pair postings with local hiring events to shorten the path to a first conversation.';
+    var featureItems = emp
+      ? ['Personalized job matches based on your skills', 'Verified employers, no fake postings', 'One click to register for hiring events near you']
+      : ['Reach candidates ranked by real skill fit', 'Every applicant comes with a verified profile', 'Pair postings with local hiring events'];
+    var featureList = document.getElementById('hl-features');
+    featureList.innerHTML = '';
+    featureItems.forEach(function(text){
+      var li = document.createElement('li');
+      li.style.cssText = 'display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#e6e4da;line-height:1.4;';
+      li.innerHTML = '<span style="color:#7fb89e;flex-shrink:0;">&check;</span>' + text;
+      featureList.appendChild(li);
+    });
+    if (currentMode === 'signup') { setMode('signup'); }
+  }
+
+  document.querySelectorAll('.modebtn').forEach(function(btn){
+    btn.addEventListener('click', function(){ setMode(btn.getAttribute('data-mode')); });
+  });
+  document.querySelectorAll('.rolebtn').forEach(function(btn){
+    btn.addEventListener('click', function(){ setRole(btn.getAttribute('data-role')); });
+  });
+  document.getElementById('switch-link').addEventListener('click', function(e){
+    e.preventDefault();
+    setMode(currentMode === 'signin' ? 'signup' : 'signin');
+  });
+  document.getElementById('forgot-link').addEventListener('click', function(e){ e.preventDefault(); });
+  document.getElementById('signin-btn').addEventListener('click', function(){
+    alert('Prototype only — would POST to /api/auth/login.');
+  });
+  document.getElementById('create-employee-btn').addEventListener('click', function(){
+    alert('Prototype only — would POST to /api/auth/register (employee).');
+  });
+  document.getElementById('create-employer-btn').addEventListener('click', function(){
+    alert('Prototype only — would POST to /api/auth/register (employer).');
+  });
+
+  setMode('signin');
+  setRole('employee');
+})();
+</script>
+</body>
+</html>
