@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Waypoint — Profile</title>
+<style>
+  body{margin:0;padding:30px 16px;background:#f4f2eb;font-family:Inter,Arial,sans-serif;}
+  .navlink:hover{color:#14151a !important;}
+  .icon{display:inline-flex;flex-shrink:0;}
+  .dot{width:8px;height:8px;border-radius:50%;background:#d8d5c9;flex-shrink:0;}
+  .dot.filled{background:#1d5c46;}
+  .track-line{flex:1;height:2px;background:#d8d5c9;}
+  .track-line.filled{background:#1d5c46;}
+  .avatar-wrap{position:relative;}
+  .avatar-btn{width:26px;height:26px;border-radius:50%;background:#14151a;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+  .dropdown{display:none;position:absolute;top:34px;right:0;background:#fff;border:1px solid #eceae1;border-radius:10px;box-shadow:0 12px 28px rgba(20,21,26,.12);min-width:190px;padding:6px;z-index:10;}
+  .dropdown.open{display:block;}
+  .dropdown-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;font-size:13px;color:#3a392f;cursor:pointer;white-space:nowrap;}
+  .dropdown-item:hover{background:#f4f2eb;}
+  .dropdown-item.active{background:#e1ecda;color:#1d5c46;font-weight:500;}
+  .dropdown-item.danger{color:#9c3a2e;}
+  .dropdown-sep{height:1px;background:#eceae1;margin:5px 2px;}
+</style>
+</head>
+<body>
+
+<div style="border-radius:12px;overflow:hidden;border:1px solid #e5e2d9;max-width:920px;margin:0 auto;background:#f4f2eb;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 28px;background:#ffffff;border-bottom:1px solid #eceae1;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="icon"><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5" fill="none" stroke="#14151a" stroke-width="1.3"/><circle cx="10" cy="10" r="3" fill="#14151a"/></svg></span>
+      <span style="font-size:15px;font-weight:500;color:#14151a;">Waypoint</span>
+    </div>
+    <div style="display:flex;gap:22px;font-size:13px;">
+      <span data-nav="home" class="navlink" style="color:#6b6a63;cursor:pointer;">Home</span>
+      <span data-nav="careers" class="navlink" style="color:#6b6a63;cursor:pointer;">Careers</span>
+      <span data-nav="events" class="navlink" style="color:#6b6a63;cursor:pointer;">Events</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="icon" style="cursor:pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 21h4"/></svg></span>
+      <div class="avatar-wrap">
+        <button type="button" class="avatar-btn" id="avatarBtn">JT</button>
+        <div class="dropdown" id="profileDropdown">
+          <div class="dropdown-item active" data-action="profile">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5"/></svg>
+            Profile
+          </div>
+          <div class="dropdown-item" data-action="password">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Change password
+          </div>
+          <div class="dropdown-item" data-action="contact">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5A8.3 8.3 0 0 1 8 19.5L3 21l1.5-5A8.3 8.3 0 0 1 3.5 12 8.5 8.5 0 0 1 12 3.5 8.5 8.5 0 0 1 21 12z"/></svg>
+            Contact us
+          </div>
+          <div class="dropdown-sep"></div>
+          <div class="dropdown-item danger" data-action="logout">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Logout
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:2rem 2.5rem;">
+    <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:#14151a;color:#fff;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;">JT</div>
+        <div>
+          <p style="font-size:17px;font-weight:500;color:#14151a;margin:0;">Jordan Torres</p>
+          <p style="font-size:12px;color:#6b6a63;margin:4px 0 0;">Irving, TX 75062 · jordan.torres@mail.com · (469) 555-0134</p>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <button id="editProfileBtn" style="background:#ffffff;color:#14151a;border:1px solid #d8d5c9;padding:7px 14px;border-radius:6px;font-size:13px;cursor:pointer;margin-bottom:6px;">Edit profile</button>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="background:#eceae1;border-radius:4px;height:5px;width:80px;"><div style="background:#1d5c46;height:5px;width:85%;border-radius:4px;"></div></div>
+          <span style="font-size:11px;color:#6b6a63;">85% complete</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.25rem;">
+      <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:14px;"><div style="font-size:22px;font-weight:500;color:#14151a;">4</div><div style="font-size:11px;color:#6b6a63;">jobs applied</div></div>
+      <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:14px;"><div style="font-size:22px;font-weight:500;color:#14151a;">2</div><div style="font-size:11px;color:#6b6a63;">in review</div></div>
+      <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:14px;"><div style="font-size:22px;font-weight:500;color:#14151a;">1</div><div style="font-size:11px;color:#6b6a63;">shortlisted</div></div>
+      <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:14px;"><div style="font-size:22px;font-weight:500;color:#14151a;">2</div><div style="font-size:11px;color:#6b6a63;">events registered</div></div>
+    </div>
+
+    <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px;"><p style="font-size:11px;color:#9b998f;text-transform:uppercase;margin:0;">Job tracking</p><span style="font-size:11px;color:#1d5c46;cursor:pointer;">View all applications</span></div>
+
+      <div style="border:1px solid #eceae1;border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div><p style="font-size:13.5px;font-weight:500;color:#14151a;margin:0;">Senior React developer</p><p style="font-size:11px;color:#6b6a63;margin:3px 0 0;">Meridian Labs · Irving, TX · Applied Jul 2</p></div>
+          <span style="font-size:10px;background:#e1ecda;color:#3b6d11;padding:4px 9px;border-radius:12px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;">Shortlisted</span>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <span style="flex:1;height:4px;border-radius:3px;background:#1d5c46;"></span><span style="flex:1;height:4px;border-radius:3px;background:#1d5c46;"></span><span style="flex:1;height:4px;border-radius:3px;background:#1d5c46;"></span><span style="flex:1;height:4px;border-radius:3px;background:#eceae1;"></span>
+        </div>
+        <p style="font-size:10.5px;color:#9b998f;margin:6px 0 0;">Applied → In review → <span style="color:#1d5c46;font-weight:600;">Shortlisted</span> → Decision</p>
+      </div>
+
+      <div style="border:1px solid #eceae1;border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div><p style="font-size:13.5px;font-weight:500;color:#14151a;margin:0;">Frontend engineer</p><p style="font-size:11px;color:#6b6a63;margin:3px 0 0;">Northbeam · Dallas, TX · Applied Jul 4</p></div>
+          <span style="font-size:10px;background:#faeeda;color:#854f0b;padding:4px 9px;border-radius:12px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;">In review</span>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <span style="flex:1;height:4px;border-radius:3px;background:#1d5c46;"></span><span style="flex:1;height:4px;border-radius:3px;background:#1d5c46;"></span><span style="flex:1;height:4px;border-radius:3px;background:#eceae1;"></span><span style="flex:1;height:4px;border-radius:3px;background:#eceae1;"></span>
+        </div>
+        <p style="font-size:10.5px;color:#9b998f;margin:6px 0 0;">Applied → <span style="color:#854f0b;font-weight:600;">In review</span> → Shortlisted → Decision</p>
+      </div>
+
+      <div style="border:1px solid #eceae1;border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div><p style="font-size:13.5px;font-weight:500;color:#14151a;margin:0;">UI engineer</p><p style="font-size:11px;color:#6b6a63;margin:3px 0 0;">Ferrous · Fort Worth, TX · Applied Jul 6</p></div>
+          <span style="font-size:10px;background:#eceae1;color:#3a392f;padding:4px 9px;border-radius:12px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;">Applied</span>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <span style="flex:1;height:4px;border-radius:3px;background:#1d5c46;"></span><span style="flex:1;height:4px;border-radius:3px;background:#eceae1;"></span><span style="flex:1;height:4px;border-radius:3px;background:#eceae1;"></span><span style="flex:1;height:4px;border-radius:3px;background:#eceae1;"></span>
+        </div>
+        <p style="font-size:10.5px;color:#9b998f;margin:6px 0 0;"><span style="color:#3a392f;font-weight:600;">Applied</span> → In review → Shortlisted → Decision</p>
+      </div>
+
+      <div style="border:1px solid #eceae1;border-radius:8px;padding:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div><p style="font-size:13.5px;font-weight:500;color:#14151a;margin:0;">QA analyst</p><p style="font-size:11px;color:#6b6a63;margin:3px 0 0;">Halstead &amp; Co · Plano, TX · Applied Jun 24</p></div>
+          <span style="font-size:10px;background:#fcebeb;color:#a32d2d;padding:4px 9px;border-radius:12px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;">Not selected</span>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <span style="flex:1;height:4px;border-radius:3px;background:#a32d2d;"></span><span style="flex:1;height:4px;border-radius:3px;background:#a32d2d;"></span><span style="flex:1;height:4px;border-radius:3px;background:#eceae1;"></span><span style="flex:1;height:4px;border-radius:3px;background:#eceae1;"></span>
+        </div>
+        <p style="font-size:10.5px;color:#9b998f;margin:6px 0 0;">Applied → In review → <span style="color:#a32d2d;font-weight:600;">Not selected</span></p>
+      </div>
+    </div>
+
+    <div style="background:#ffffff;border:1px solid #eceae1;border-radius:10px;padding:16px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px;"><p style="font-size:11px;color:#9b998f;text-transform:uppercase;margin:0;">Registered events</p><span style="font-size:11px;color:#1d5c46;cursor:pointer;">Browse events</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eceae1;">
+        <div><p style="font-size:13px;font-weight:500;color:#14151a;margin:0;">DFW tech career fair</p><p style="font-size:11px;color:#6b6a63;margin:2px 0 0;">Meridian Labs · Sat, Jul 18 · In-person</p></div>
+        <button style="background:#ffffff;color:#14151a;border:1px solid #d8d5c9;padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;">View details</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+        <div><p style="font-size:13px;font-weight:500;color:#14151a;margin:0;">Resume &amp; interview prep webinar</p><p style="font-size:11px;color:#6b6a63;margin:2px 0 0;">Waypoint · Thu, Jul 30 · Virtual</p></div>
+        <button style="background:#ffffff;color:#14151a;border:1px solid #d8d5c9;padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;">View details</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function sendPrompt(text){ alert('Prototype navigation \u2192 ' + text); }
+
+  var prompts = {
+    careers: 'Show me the careers search page with job listings',
+    events: 'Show me the events list and event detail page',
+    profile: 'Show me the profile page',
+    contact: 'Show me the contact us page',
+    home: 'Show me the home dashboard'
+  };
+  document.querySelectorAll('.navlink').forEach(function(el){
+    el.addEventListener('click', function(){
+      var target = el.getAttribute('data-nav');
+      if (target && prompts[target]) { sendPrompt(prompts[target]); }
+    });
+  });
+
+  var avatarBtn = document.getElementById('avatarBtn');
+  var dropdown = document.getElementById('profileDropdown');
+  avatarBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+  });
+  document.addEventListener('click', function(){ dropdown.classList.remove('open'); });
+  dropdown.addEventListener('click', function(e){ e.stopPropagation(); });
+
+  document.querySelectorAll('.dropdown-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      var action = item.getAttribute('data-action');
+      dropdown.classList.remove('open');
+      if (action === 'profile') sendPrompt(prompts.profile);
+      else if (action === 'contact') sendPrompt(prompts.contact);
+      else if (action === 'password') sendPrompt('Show me the change password page');
+      else if (action === 'logout') sendPrompt('Show me the sign in page');
+    });
+  });
+
+  document.getElementById('editProfileBtn').addEventListener('click', function(){
+    sendPrompt('Show me the edit profile page');
+  });
+})();
+</script>
+</body>
+</html>

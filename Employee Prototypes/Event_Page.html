@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waypoint — Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#171B1E;
+    --ink-soft:#4B5157;
+    --muted:#868C84;
+    --paper:#F5F4EF;
+    --surface:#FFFFFF;
+    --line:#E3E1D8;
+    --accent:#1D4B3D;
+    --accent-soft:#E7EDE9;
+    --amber:#8A6A22;
+    --amber-soft:#F3ECDA;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{margin:0;background:var(--paper);font-family:'Inter',sans-serif;color:var(--ink);}
+
+  .brandmark{display:flex;align-items:center;gap:10px;}
+  .ring{width:20px;height:20px;flex-shrink:0;}
+  .wordmark{font-family:'Fraunces',serif;font-weight:500;font-size:19px;letter-spacing:-0.01em;}
+
+  .topnav{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line);padding:0 44px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .topnav-links{display:flex;align-items:center;gap:4px;}
+  .navitem{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:6px;font-size:13.5px;font-weight:500;color:var(--ink-soft);cursor:pointer;text-decoration:none;}
+  .navitem:hover{background:var(--paper);}
+  .navitem.active{background:var(--accent-soft);color:var(--accent);}
+  .topnav-right{display:flex;align-items:center;gap:16px;}
+  .bell{color:var(--ink-soft);cursor:pointer;position:relative;}
+  .bell .dot{position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:var(--amber);border:1.5px solid var(--surface);}
+  .initial{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;cursor:pointer;border:none;}
+  .avatar-wrap{position:relative;}
+  .dropdown{display:none;position:absolute;top:40px;right:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px rgba(20,21,26,.12);min-width:190px;padding:6px;z-index:10;}
+  .dropdown.open{display:block;}
+  .dropdown-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;font-size:13px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+  .dropdown-item:hover{background:var(--paper);}
+  .dropdown-item.danger{color:#9C3A2E;}
+  .dropdown-sep{height:1px;background:var(--line);margin:5px 2px;}
+
+  @media (max-width:900px){
+    .topnav{padding:0 20px;}
+    .topnav-links{display:none;}
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 44px 64px;}
+  .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;}
+  .page-head h1{font-family:'Fraunces',serif;font-weight:500;font-size:26px;margin:0 0 4px;letter-spacing:-0.01em;}
+  .page-head .sub{font-size:13.5px;color:var(--muted);}
+
+  .eyebrow{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+
+  .btn{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:9px 16px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn-primary:hover{opacity:0.92;}
+  .btn-ghost{background:transparent;}
+
+  .search-hero{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:16px;}
+  .search-row{display:grid;grid-template-columns:1fr 1px 260px auto;align-items:center;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface);}
+  .search-field{display:flex;align-items:center;gap:10px;padding:12px 16px;}
+  .search-field svg{flex-shrink:0;color:var(--muted);}
+  .search-field input{border:none;outline:none;background:transparent;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);width:100%;}
+  .search-field input::placeholder{color:var(--muted);}
+  .search-divider{background:var(--line);height:32px;justify-self:center;}
+  .search-go{background:var(--accent);color:#fff;border:none;padding:0 26px;height:100%;min-height:48px;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;}
+  .search-go:hover{opacity:0.92;}
+
+  .filter-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .filter-chip{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--line);border-radius:20px;font-size:12.5px;font-weight:500;color:var(--ink-soft);background:var(--surface);cursor:pointer;}
+  .filter-chip svg{flex-shrink:0;}
+  .filter-chip:hover{border-color:var(--ink-soft);}
+  .filter-chip.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+  .filter-sep{width:1px;height:18px;background:var(--line);margin:0 2px;}
+  .filter-clear{font-size:12.5px;color:var(--muted);cursor:pointer;margin-left:auto;text-decoration:underline;text-underline-offset:2px;}
+
+  .filter-dropdown{position:relative;}
+  .filter-dropdown .chevron{transition:transform .15s;}
+  .filter-dropdown:hover .chevron{transform:rotate(180deg);}
+  .filter-dropdown:hover .filter-chip{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  .dropdown-panel{position:absolute;top:calc(100% + 8px);left:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px rgba(23,27,30,0.1);padding:8px;min-width:180px;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .15s,transform .15s,visibility .15s;z-index:10;}
+  .filter-dropdown:hover .dropdown-panel{opacity:1;visibility:visible;transform:translateY(0);}
+  .dropdown-option{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;font-size:13px;color:var(--ink-soft);cursor:pointer;}
+  .dropdown-option:hover{background:var(--paper);}
+  .dropdown-option .box{width:15px;height:15px;border:1.5px solid var(--line);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .dropdown-option.checked .box{background:var(--accent);border-color:var(--accent);}
+  .dropdown-option.checked .box svg{display:block;}
+  .dropdown-option .box svg{display:none;}
+  .dropdown-option.checked{color:var(--ink);}
+  .dropdown-option.radio .box{border-radius:50%;}
+
+  .results-head{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 14px;}
+  .results-head .eyebrow{margin:0;}
+  .results-head .count{font-size:12.5px;color:var(--muted);}
+
+  .split-shell{display:grid;grid-template-columns:290px 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);}
+  .tab-list{background:var(--paper);border-right:1px solid var(--line);padding:10px;max-height:640px;overflow-y:auto;}
+  .tab-group-label{font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);padding:12px 12px 6px;}
+  .tab-item{padding:12px 14px;border-radius:6px;cursor:pointer;margin-bottom:2px;border-left:3px solid transparent;}
+  .tab-item .t{font-size:13.5px;font-weight:600;margin:0 0 3px;}
+  .tab-item .d{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  .tab-item .fmt{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);}
+  .tab-item .fmt.virtual{background:var(--amber-soft);color:var(--amber);}
+  .tab-item:hover{background:rgba(0,0,0,0.02);}
+  .tab-item.active{background:var(--accent-soft);border-left-color:var(--accent);}
+  .tab-item.active .t{color:var(--accent);}
+
+  .detail-pane{padding:32px 36px;}
+  .detail-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+  .detail-head h2{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:0 0 6px;letter-spacing:-0.01em;}
+  .detail-actions{display:flex;gap:8px;}
+
+  .facts-row{display:flex;gap:0;margin:20px 0 26px;flex-wrap:wrap;}
+  .facts-row div{padding-right:28px;margin-right:28px;border-right:1px solid var(--line);}
+  .facts-row div:last-child{border-right:none;margin-right:0;padding-right:0;}
+  .facts-row .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin:0 0 5px;}
+  .facts-row .v{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:500;}
+  .body-copy{font-size:14.5px;line-height:1.75;color:var(--ink-soft);max-width:620px;}
+
+  .meter-wrap{display:flex;align-items:center;gap:8px;}
+  .meter-track{width:70px;height:5px;background:var(--line);border-radius:3px;overflow:hidden;flex-shrink:0;}
+  .meter-fill{height:100%;background:var(--accent);}
+  .meter-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
+
+  .rsvp-status{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:12px 16px;font-size:13px;font-weight:500;margin-top:22px;}
+  .rsvp-status svg{flex-shrink:0;}
+  .rsvp-status .cancel{margin-left:10px;font-size:12px;font-weight:500;color:var(--ink-soft);text-decoration:underline;cursor:pointer;}
+
+  @media (max-width:900px){
+    .wrap{padding:24px 20px 48px;}
+    .split-shell{grid-template-columns:1fr;}
+    .tab-list{max-height:240px;}
+    .facts-row{flex-wrap:wrap;}
+    .search-row{grid-template-columns:1fr;}
+    .search-divider{display:none;}
+    .search-field{border-bottom:1px solid var(--line);}
+    .search-go{padding:14px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="brandmark"><svg class="ring" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5" fill="none" stroke="#171B1E" stroke-width="1.3"/><circle cx="10" cy="10" r="3" fill="#1D4B3D"/></svg><span class="wordmark">Waypoint</span></div>
+  <div class="topnav-links">
+    <div class="navitem">Home</div>
+    <div class="navitem">Careers</div>
+    <div class="navitem active">Events</div>
+  </div>
+  <div class="topnav-right">
+    <div class="bell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 21h4"/></svg><span class="dot"></span></div>
+    <div class="avatar-wrap">
+      <button type="button" class="initial" id="avatarBtn">JT</button>
+      <div class="dropdown" id="profileDropdown">
+        <div class="dropdown-item" data-action="profile">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5"/></svg>
+          Profile
+        </div>
+        <div class="dropdown-item" data-action="password">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          Change password
+        </div>
+        <div class="dropdown-item" data-action="contact">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5A8.3 8.3 0 0 1 8 19.5L3 21l1.5-5A8.3 8.3 0 0 1 3.5 12 8.5 8.5 0 0 1 12 3.5 8.5 8.5 0 0 1 21 12z"/></svg>
+          Contact us
+        </div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item danger" data-action="logout">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          Logout
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-head"><div><h1>Events near you</h1><p class="sub">Career fairs, info sessions, and meetups matched to your skills</p></div></div>
+
+  <div class="search-hero">
+    <div class="search-row">
+      <div class="search-field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Event name or keyword, e.g. Career fair">
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <input type="text" placeholder="City or zip code">
+      </div>
+      <button class="search-go">Search</button>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-dropdown">
+        <div class="filter-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          Date
+          <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="dropdown-panel">
+          <div class="dropdown-option radio"><span class="box"></span>This week</div>
+          <div class="dropdown-option radio"><span class="box"></span>This month</div>
+          <div class="dropdown-option radio checked"><span class="box"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></span></span>No preference</div>
+        </div>
+      </div>
+
+      <div class="filter-dropdown">
+        <div class="filter-chip sel">
+          Distance
+          <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="dropdown-panel">
+          <div class="dropdown-option radio"><span class="box"></span>Within 5 mi</div>
+          <div class="dropdown-option radio checked"><span class="box"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></span></span>Within 10 mi</div>
+          <div class="dropdown-option radio"><span class="box"></span>Within 25 mi</div>
+          <div class="dropdown-option radio"><span class="box"></span>Within 50 mi</div>
+          <div class="dropdown-option radio"><span class="box"></span>Anywhere in USA</div>
+        </div>
+      </div>
+
+      <div class="filter-sep"></div>
+
+      <div class="filter-dropdown">
+        <div class="filter-chip">
+          Event type
+          <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="dropdown-panel">
+          <div class="dropdown-option"><span class="box"></span>Career fair</div>
+          <div class="dropdown-option"><span class="box"></span>Info session</div>
+          <div class="dropdown-option"><span class="box"></span>Meetup</div>
+          <div class="dropdown-option"><span class="box"></span>Webinar</div>
+        </div>
+      </div>
+
+      <div class="filter-dropdown">
+        <div class="filter-chip">
+          Format
+          <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="dropdown-panel">
+          <div class="dropdown-option radio checked"><span class="box"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></span></span>Any format</div>
+          <div class="dropdown-option radio"><span class="box"></span>In-person</div>
+          <div class="dropdown-option radio"><span class="box"></span>Virtual</div>
+        </div>
+      </div>
+
+      <span class="filter-clear">Clear all</span>
+    </div>
+  </div>
+
+  <div class="results-head"><p class="eyebrow">Upcoming events</p><span class="count">5 results</span></div>
+
+  <div class="split-shell">
+    <div class="tab-list">
+      <div class="tab-item active">
+        <p class="t">DFW tech career fair</p>
+        <p class="d"><span class="fmt">In-person</span>Meridian Labs · Sat, Jul 18</p>
+      </div>
+      <div class="tab-item">
+        <p class="t">Product design meetup</p>
+        <p class="d"><span class="fmt">In-person</span>Northbeam · Tue, Jul 21</p>
+      </div>
+      <div class="tab-item">
+        <p class="t">Frontend engineering info session</p>
+        <p class="d"><span class="fmt virtual">Virtual</span>Meridian Labs · Wed, Jul 29</p>
+      </div>
+      <div class="tab-item">
+        <p class="t">Resume & interview prep webinar</p>
+        <p class="d"><span class="fmt virtual">Virtual</span>Waypoint · Thu, Jul 30</p>
+      </div>
+      <div class="tab-item">
+        <p class="t">Fall internship open house</p>
+        <p class="d"><span class="fmt">In-person</span>Ferrous · Thu, Aug 6</p>
+      </div>
+    </div>
+
+    <div class="detail-pane">
+      <div class="detail-head">
+        <div>
+          <h2>DFW tech career fair</h2>
+          <p class="sub" style="font-size:13px;color:var(--muted);margin:0;">Hosted by Meridian Labs</p>
+        </div>
+        <div class="detail-actions">
+          <button class="btn btn-ghost">Add to calendar</button>
+        </div>
+      </div>
+
+      <div class="facts-row">
+        <div><p class="k">Date &amp; time</p><p class="v">Jul 18, 10:00 AM – 2:00 PM</p></div>
+        <div><p class="k">Register by</p><p class="v">Jul 16, 11:59 PM</p></div>
+        <div><p class="k">Format</p><p class="v">In-person</p></div>
+        <div><p class="k">Capacity</p><div class="meter-wrap"><div class="meter-track"><div class="meter-fill" style="width:68%;"></div></div><span class="meter-num">41 / 60</span></div></div>
+        <div><p class="k">Event type</p><p class="v">Career fair</p></div>
+      </div>
+
+      <p class="eyebrow">About this event</p>
+      <p class="body-copy">An open career fair connecting Meridian Labs with engineering, design, and product talent across the Dallas–Fort Worth area. Walk-ins welcome; registered attendees get priority scheduling for on-the-spot interviews.</p>
+
+      <div class="rsvp-status">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+        You're registered for this event
+        <span class="cancel">Cancel registration</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function sendPrompt(text){ alert('Prototype navigation \u2192 ' + text); }
+  var avatarBtn = document.getElementById('avatarBtn');
+  var dropdown = document.getElementById('profileDropdown');
+  avatarBtn.addEventListener('click', function(e){ e.stopPropagation(); dropdown.classList.toggle('open'); });
+  document.addEventListener('click', function(){ dropdown.classList.remove('open'); });
+  dropdown.addEventListener('click', function(e){ e.stopPropagation(); });
+  document.querySelectorAll('.dropdown-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      var action = item.getAttribute('data-action');
+      dropdown.classList.remove('open');
+      if (action === 'profile') sendPrompt('Show me the profile page');
+      else if (action === 'contact') sendPrompt('Show me the contact us page');
+      else if (action === 'password') sendPrompt('Show me the change password page');
+      else if (action === 'logout') sendPrompt('Show me the sign in page');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

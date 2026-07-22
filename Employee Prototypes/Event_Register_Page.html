@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waypoint — Register for event</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#171B1E;
+    --ink-soft:#4B5157;
+    --muted:#868C84;
+    --paper:#F5F4EF;
+    --surface:#FFFFFF;
+    --line:#E3E1D8;
+    --accent:#1D4B3D;
+    --accent-soft:#E7EDE9;
+    --amber:#8A6A22;
+    --amber-soft:#F3ECDA;
+    --error:#9C3A2E;
+    --error-soft:#F6E7E4;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{margin:0;background:var(--paper);font-family:'Inter',sans-serif;color:var(--ink);}
+
+  .brandmark{display:flex;align-items:center;gap:10px;}
+  .ring{width:20px;height:20px;flex-shrink:0;}
+  .wordmark{font-family:'Fraunces',serif;font-weight:500;font-size:19px;letter-spacing:-0.01em;}
+
+  .topnav{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line);padding:0 44px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .topnav-links{display:flex;align-items:center;gap:4px;}
+  .navitem{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:6px;font-size:13.5px;font-weight:500;color:var(--ink-soft);cursor:pointer;text-decoration:none;}
+  .navitem:hover{background:var(--paper);}
+  .navitem.active{background:var(--accent-soft);color:var(--accent);}
+  .topnav-right{display:flex;align-items:center;gap:16px;}
+  .bell{color:var(--ink-soft);cursor:pointer;position:relative;}
+  .bell .dot{position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:var(--amber);border:1.5px solid var(--surface);}
+  .initial{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;cursor:pointer;border:none;}
+  .avatar-wrap{position:relative;}
+  .dropdown{display:none;position:absolute;top:40px;right:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px rgba(20,21,26,.12);min-width:190px;padding:6px;z-index:10;}
+  .dropdown.open{display:block;}
+  .dropdown-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;font-size:13px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+  .dropdown-item:hover{background:var(--paper);}
+  .dropdown-item.danger{color:#9C3A2E;}
+  .dropdown-sep{height:1px;background:var(--line);margin:5px 2px;}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 44px 64px;}
+
+  .crumb{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin-bottom:20px;}
+  .crumb a{color:var(--muted);text-decoration:none;}
+  .crumb a:hover{color:var(--accent);}
+  .crumb .here{color:var(--ink);font-weight:500;}
+
+  .page-head{margin-bottom:24px;}
+  .page-head .host{font-size:12.5px;color:var(--muted);margin:6px 0 0;}
+  .page-head h1{font-family:'Fraunces',serif;font-weight:500;font-size:28px;margin:0;letter-spacing:-0.01em;}
+  .fmt{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:10px;padding:3px 9px;margin-bottom:10px;}
+
+  .eyebrow{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+
+  .layout{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start;}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:26px 28px;margin-bottom:18px;}
+
+  .facts-row{display:flex;gap:36px;flex-wrap:wrap;}
+  .facts-row .k{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;}
+  .facts-row .v{font-size:13.5px;font-weight:500;color:var(--ink);margin:0;}
+  .meter-wrap{display:flex;align-items:center;gap:9px;}
+  .meter-track{width:80px;height:5px;background:var(--paper);border:1px solid var(--line);border-radius:3px;overflow:hidden;flex-shrink:0;}
+  .meter-fill{height:100%;background:var(--accent);}
+  .meter-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
+
+  .body-copy{font-size:13.5px;line-height:1.65;color:var(--ink-soft);margin:0;}
+
+  .agenda{display:flex;flex-direction:column;}
+  .agenda-item{display:grid;grid-template-columns:86px 14px 1fr;gap:0 14px;position:relative;padding-bottom:20px;}
+  .agenda-item:last-child{padding-bottom:0;}
+  .agenda-item .time{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);padding-top:1px;text-align:right;}
+  .agenda-item .node{display:flex;flex-direction:column;align-items:center;}
+  .agenda-item .node .pt{width:9px;height:9px;border-radius:50%;border:2px solid var(--accent);background:var(--surface);flex-shrink:0;margin-top:3px;}
+  .agenda-item .node .ln{width:1.5px;flex:1;background:var(--line);margin-top:4px;}
+  .agenda-item:last-child .node .ln{display:none;}
+  .agenda-item .what p:first-child{font-size:13.5px;font-weight:500;margin:0 0 2px;}
+  .agenda-item .what p:last-child{font-size:12.5px;color:var(--muted);margin:0;}
+
+  .elig{display:flex;flex-direction:column;gap:10px;}
+  .elig-item{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink-soft);}
+  .elig-item .ok{width:18px;height:18px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .elig-note{font-size:12px;color:var(--muted);margin:12px 0 0;}
+
+  .venue-line{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink-soft);margin-bottom:14px;}
+  .venue-line svg{flex-shrink:0;color:var(--muted);margin-top:1px;}
+  .weather-chip{display:flex;align-items:center;gap:12px;background:var(--amber-soft);border-radius:8px;padding:12px 16px;}
+  .weather-chip .temp{font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--amber);}
+  .weather-chip p{font-size:12.5px;color:var(--ink-soft);margin:0;line-height:1.5;}
+
+  .reg-panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:26px 28px;position:sticky;top:84px;}
+  .reg-panel h3{font-family:'Fraunces',serif;font-size:17px;font-weight:500;margin:0 0 4px;}
+  .reg-panel .deadline{font-size:12px;color:var(--amber);font-weight:500;margin:0 0 20px;}
+  .field{margin-bottom:14px;}
+  .field label{font-size:12.5px;font-weight:500;color:var(--ink-soft);display:block;margin-bottom:6px;}
+  .field label .req{color:var(--error);}
+  .field input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:6px;font-size:14px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none;transition:border-color .15s;}
+  .field input:focus{border-color:var(--accent);}
+  .field input[readonly]{background:var(--paper);color:var(--ink-soft);}
+  .field.invalid input{border-color:var(--error);}
+  .err-msg{display:none;font-size:11.5px;color:var(--error);margin-top:5px;}
+  .invalid .err-msg{display:block;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;}
+
+  .opt-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0 2px;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+  .opt-row input{margin:2px 0 0;accent-color:var(--accent);}
+  .opt-row.invalid{color:var(--error);}
+  .opt-row.invalid a{color:var(--error);}
+
+  .btn-primary{width:100%;padding:13px;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;border-radius:6px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;transition:opacity .15s;margin-top:14px;}
+  .btn-primary:hover{opacity:0.92;}
+  .spots-note{font-size:12px;color:var(--muted);text-align:center;margin:12px 0 0;}
+
+  .rsvp-status{display:none;align-items:flex-start;gap:10px;background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:14px 16px;font-size:13px;font-weight:500;line-height:1.55;}
+  .rsvp-status svg{flex-shrink:0;margin-top:1px;}
+  .rsvp-status .note{display:block;font-weight:400;color:var(--ink-soft);margin-top:4px;}
+  .reg-panel.done form{display:none;}
+  .reg-panel.done .deadline{display:none;}
+  .reg-panel.done .rsvp-status{display:flex;}
+  .reg-panel.done .post-actions{display:flex;}
+  .post-actions{display:none;gap:8px;margin-top:14px;}
+  .btn{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:9px 16px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;flex:1;}
+  .btn:hover{border-color:var(--ink-soft);}
+
+  @media (max-width:960px){
+    .topnav{padding:0 20px;}
+    .topnav-links{display:none;}
+    .wrap{padding:20px 20px 48px;}
+    .layout{grid-template-columns:1fr;}
+    .reg-panel{position:static;}
+    .facts-row{gap:20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="brandmark"><svg class="ring" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5" fill="none" stroke="#171B1E" stroke-width="1.3"/><circle cx="10" cy="10" r="3" fill="#1D4B3D"/></svg><span class="wordmark">Waypoint</span></div>
+  <div class="topnav-links">
+    <div class="navitem">Home</div>
+    <div class="navitem">Careers</div>
+    <div class="navitem active">Events</div>
+  </div>
+  <div class="topnav-right">
+    <div class="bell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 21h4"/></svg><span class="dot"></span></div>
+    <div class="avatar-wrap">
+      <button type="button" class="initial" id="avatarBtn">JT</button>
+      <div class="dropdown" id="profileDropdown">
+        <div class="dropdown-item" data-action="profile">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5"/></svg>
+          Profile
+        </div>
+        <div class="dropdown-item" data-action="password">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          Change password
+        </div>
+        <div class="dropdown-item" data-action="contact">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5A8.3 8.3 0 0 1 8 19.5L3 21l1.5-5A8.3 8.3 0 0 1 3.5 12 8.5 8.5 0 0 1 12 3.5 8.5 8.5 0 0 1 21 12z"/></svg>
+          Contact us
+        </div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item danger" data-action="logout">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          Logout
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="crumb"><a href="#">Events</a> <span>/</span> <span class="here">DFW tech career fair</span></div>
+
+  <div class="page-head">
+    <span class="fmt">In-person · Career fair</span>
+    <h1>DFW tech career fair</h1>
+    <p class="host">Hosted by Meridian Labs</p>
+  </div>
+
+  <div class="layout">
+    <div class="main-col">
+
+      <div class="card">
+        <div class="facts-row">
+          <div><p class="k">Date</p><p class="v">Sat, Jul 18</p></div>
+          <div><p class="k">Time</p><p class="v">10:00 AM – 2:00 PM</p></div>
+          <div><p class="k">Register by</p><p class="v">Jul 16, 11:59 PM</p></div>
+          <div><p class="k">Capacity</p><div class="meter-wrap"><div class="meter-track"><div class="meter-fill" style="width:68%;"></div></div><span class="meter-num">41 / 60</span></div></div>
+          <div><p class="k">Event type</p><p class="v">Career fair</p></div>
+          <div><p class="k">Format</p><p class="v">In-person</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">About this event</p>
+        <p class="body-copy">An open career fair connecting Meridian Labs with engineering, design, and product talent across the Dallas–Fort Worth area. Registered attendees get priority scheduling for on-the-spot interviews and a resume review desk. Bring printed copies of your resume if you can — reviewers annotate on paper.</p>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">Agenda</p>
+        <div class="agenda">
+          <div class="agenda-item">
+            <p class="time">10:00 AM</p>
+            <div class="node"><span class="pt"></span><span class="ln"></span></div>
+            <div class="what"><p>Doors open &amp; check-in</p><p>Badge pickup at the north lobby desk</p></div>
+          </div>
+          <div class="agenda-item">
+            <p class="time">10:30 AM</p>
+            <div class="node"><span class="pt"></span><span class="ln"></span></div>
+            <div class="what"><p>Employer booths open</p><p>Engineering, design, and product teams on the main floor</p></div>
+          </div>
+          <div class="agenda-item">
+            <p class="time">12:00 PM</p>
+            <div class="node"><span class="pt"></span><span class="ln"></span></div>
+            <div class="what"><p>Lightning talks</p><p>15-minute sessions on hiring at Meridian Labs</p></div>
+          </div>
+          <div class="agenda-item">
+            <p class="time">1:00 PM</p>
+            <div class="node"><span class="pt"></span><span class="ln"></span></div>
+            <div class="what"><p>On-the-spot interviews</p><p>Priority slots for registered attendees</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">Eligibility</p>
+        <div class="elig">
+          <div class="elig-item"><span class="ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>Open to students and professionals with 0–5 years of experience</div>
+          <div class="elig-item"><span class="ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>Located in Texas — matches your profile address</div>
+          <div class="elig-item"><span class="ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>At least one skill in engineering, design, or product — matches your skills</div>
+        </div>
+        <p class="elig-note">Checks are based on your Waypoint profile. Update your profile if something looks off.</p>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">What to bring</p>
+        <div class="elig">
+          <div class="elig-item"><span class="ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>2–3 printed copies of your resume — reviewers annotate on paper</div>
+          <div class="elig-item"><span class="ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>A government-issued photo ID for badge check-in</div>
+          <div class="elig-item"><span class="ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>Portfolio or work samples, if applicable to your field</div>
+        </div>
+        <p class="elig-note">On-the-spot interviews move fast — bring these so you're ready if you're pulled in.</p>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">Venue</p>
+        <div class="venue-line">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          Meridian Labs, 2201 N MacArthur Blvd, Irving, TX 75062 — north lobby entrance
+        </div>
+        <div class="weather-chip">
+          <span class="temp">91°F</span>
+          <p><strong>Saturday forecast: sunny and clear.</strong> Outdoor booths will be open on the terrace — check-in stays indoors.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="reg-panel" id="regPanel">
+      <h3>Register for this event</h3>
+      <p class="deadline">Registration closes Jul 16, 11:59 PM</p>
+
+      <form onsubmit="return false;">
+        <div class="grid-2">
+          <div class="field"><label>First name</label><input type="text" value="Jordan" readonly></div>
+          <div class="field"><label>Last name</label><input type="text" value="Torres" readonly></div>
+        </div>
+        <div class="field"><label>Email</label><input type="email" value="jordan.torres@mail.com" readonly></div>
+        <div class="field" id="phoneField"><label>Phone <span class="req">*</span></label><input type="tel" id="f-phone" placeholder="(469) 555-0134"><p class="err-msg">Enter a phone number for event updates.</p></div>
+
+        <div class="opt-row"><input type="checkbox" id="shareResume" checked><label for="shareResume">Share my resume with the host so reviewers can prepare</label></div>
+        <div class="opt-row" id="docsRow"><input type="checkbox" id="confirmDocs"><label for="confirmDocs">I'll bring the documents listed above <span class="req">*</span></label></div>
+        <div class="opt-row" id="eligRow"><input type="checkbox" id="confirmElig"><label for="confirmElig">I confirm I meet the eligibility criteria above <span class="req">*</span></label></div>
+
+        <button class="btn-primary" id="registerBtn">Register</button>
+        <p class="spots-note">19 spots left · You can cancel anytime before Jul 17</p>
+      </form>
+
+      <div class="rsvp-status">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+        <span>You're registered for this event
+          <span class="note">A confirmation was sent to jordan.torres@mail.com. We'll remind you the day before.</span>
+        </span>
+      </div>
+      <div class="post-actions">
+        <button class="btn">Add to calendar</button>
+        <button class="btn">Cancel registration</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  function sendPrompt(text){ alert('Prototype navigation \u2192 ' + text); }
+  var avatarBtn = document.getElementById('avatarBtn');
+  var dropdown = document.getElementById('profileDropdown');
+  avatarBtn.addEventListener('click', function(e){ e.stopPropagation(); dropdown.classList.toggle('open'); });
+  document.addEventListener('click', function(){ dropdown.classList.remove('open'); });
+  dropdown.addEventListener('click', function(e){ e.stopPropagation(); });
+  document.querySelectorAll('.dropdown-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      var action = item.getAttribute('data-action');
+      dropdown.classList.remove('open');
+      if (action === 'profile') sendPrompt('Show me the profile page');
+      else if (action === 'contact') sendPrompt('Show me the contact us page');
+      else if (action === 'password') sendPrompt('Show me the change password page');
+      else if (action === 'logout') sendPrompt('Show me the sign in page');
+    });
+  });
+
+  var btn = document.getElementById('registerBtn');
+  btn.addEventListener('click', function(){
+    var bad = false;
+    var phoneField = document.getElementById('phoneField');
+    var phoneOk = document.getElementById('f-phone').value.trim().length >= 7;
+    phoneField.classList.toggle('invalid', !phoneOk);
+    if(!phoneOk) bad = true;
+
+    var eligRow = document.getElementById('eligRow');
+    var eligOk = document.getElementById('confirmElig').checked;
+    eligRow.classList.toggle('invalid', !eligOk);
+    if(!eligOk) bad = true;
+
+    var docsRow = document.getElementById('docsRow');
+    var docsOk = document.getElementById('confirmDocs').checked;
+    docsRow.classList.toggle('invalid', !docsOk);
+    if(!docsOk) bad = true;
+
+    if(!bad){
+      document.getElementById('regPanel').classList.add('done');
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

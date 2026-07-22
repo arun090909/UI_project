@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Waypoint — Edit profile</title>
+<style>
+  body{margin:0;padding:30px 16px;background:#f4f2eb;font-family:Inter,Arial,sans-serif;}
+  .navlink:hover{color:#14151a !important;}
+  .icon{display:inline-flex;flex-shrink:0;}
+  .chip{font-size:12px;border:1px solid #d8d5c9;border-radius:14px;padding:4px 6px 4px 10px;color:#3a392f;background:#fff;display:inline-flex;align-items:center;gap:6px;}
+  .chip button{border:none;background:none;color:#9b998f;font-size:13px;font-weight:600;cursor:pointer;line-height:1;padding:0;}
+  .chip button:hover{color:#9c3a2e;}
+  .pill{font-size:12.5px;font-weight:500;color:#3a392f;border:1px solid #d8d5c9;background:#fff;padding:7px 14px;border-radius:16px;cursor:pointer;}
+  .pill.on{background:#1d5c46;border-color:#1d5c46;color:#fff;}
+  .addrow{display:flex;gap:8px;margin-bottom:8px;}
+  .addrow select{flex:1;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;font-size:13.5px;background:#fff;}
+  .addrow button{padding:8px 16px;border:1px solid #1d5c46;background:#1d5c46;color:#fff;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;}
+  .field label{font-size:12px;color:#3a392f;display:block;margin-bottom:4px;}
+  .field input,.field select{width:100%;padding:8px 10px;border:1px solid #d8d5c9;border-radius:6px;box-sizing:border-box;font-size:14px;}
+  .section-h{font-size:13px;font-weight:500;color:#14151a;border-bottom:1px solid #eceae1;padding-bottom:6px;margin:0 0 12px;}
+  .avatar-wrap{position:relative;}
+  .avatar-btn{width:26px;height:26px;border-radius:50%;background:#14151a;color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+  .dropdown{display:none;position:absolute;top:34px;right:0;background:#fff;border:1px solid #eceae1;border-radius:10px;box-shadow:0 12px 28px rgba(20,21,26,.12);min-width:190px;padding:6px;z-index:10;}
+  .dropdown.open{display:block;}
+  .dropdown-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;font-size:13px;color:#3a392f;cursor:pointer;white-space:nowrap;}
+  .dropdown-item:hover{background:#f4f2eb;}
+  .dropdown-item.danger{color:#9c3a2e;}
+  .dropdown-sep{height:1px;background:#eceae1;margin:5px 2px;}
+</style>
+</head>
+<body>
+
+<div style="border-radius:12px;overflow:hidden;border:1px solid #e5e2d9;max-width:920px;margin:0 auto;background:#f4f2eb;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 28px;background:#ffffff;border-bottom:1px solid #eceae1;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="icon"><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5" fill="none" stroke="#14151a" stroke-width="1.3"/><circle cx="10" cy="10" r="3" fill="#14151a"/></svg></span>
+      <span style="font-size:15px;font-weight:500;color:#14151a;">Waypoint</span>
+    </div>
+    <div style="display:flex;gap:22px;font-size:13px;">
+      <span data-nav="home" class="navlink" style="color:#6b6a63;cursor:pointer;">Home</span>
+      <span data-nav="careers" class="navlink" style="color:#6b6a63;cursor:pointer;">Careers</span>
+      <span data-nav="events" class="navlink" style="color:#6b6a63;cursor:pointer;">Events</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="icon" style="cursor:pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 21h4"/></svg></span>
+      <div class="avatar-wrap">
+        <button type="button" class="avatar-btn" id="avatarBtn">JT</button>
+        <div class="dropdown" id="profileDropdown">
+          <div class="dropdown-item" data-action="profile">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5"/></svg>
+            Profile
+          </div>
+          <div class="dropdown-item" data-action="password">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Change password
+          </div>
+          <div class="dropdown-item" data-action="contact">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5A8.3 8.3 0 0 1 8 19.5L3 21l1.5-5A8.3 8.3 0 0 1 3.5 12 8.5 8.5 0 0 1 12 3.5 8.5 8.5 0 0 1 21 12z"/></svg>
+            Contact us
+          </div>
+          <div class="dropdown-sep"></div>
+          <div class="dropdown-item danger" data-action="logout">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Logout
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:2rem 2.5rem;max-width:640px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;cursor:pointer;" id="backLink">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3a392f" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      <span style="font-size:13px;color:#3a392f;">Back to profile</span>
+    </div>
+    <h1 style="font-size:22px;font-weight:500;color:#14151a;font-family:Georgia,serif;margin:0 0 1.5rem;">Edit profile</h1>
+
+    <h3 class="section-h">Profile picture</h3>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
+      <div style="width:52px;height:52px;border-radius:50%;background:#14151a;color:#fff;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;">JT</div>
+      <button type="button" style="padding:8px 16px;border:1px solid #d8d5c9;border-radius:6px;background:#fff;font-size:13px;color:#3a392f;cursor:pointer;">Change photo</button>
+    </div>
+
+    <h3 class="section-h">Personal info</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem;">
+      <div class="field"><label>First name</label><input value="Jordan"></div>
+      <div class="field"><label>Last name</label><input value="Torres"></div>
+      <div class="field"><label>Email</label><input value="jordan.torres@mail.com"></div>
+      <div class="field"><label>Phone</label><input value="(469) 555-0134"></div>
+    </div>
+
+    <h3 class="section-h">Resume</h3>
+    <div style="display:flex;align-items:center;gap:10px;border:1px solid #eceae1;border-radius:8px;padding:10px 12px;margin-bottom:10px;">
+      <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6a63" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+      <div><p style="font-size:13px;color:#14151a;margin:0;">jordan_torres_resume.pdf</p><p style="font-size:11px;color:#9b998f;margin:1px 0 0;">Uploaded Jul 6, 2026 · 182 KB</p></div>
+    </div>
+    <button type="button" id="uploadResumeBtn" style="padding:8px 16px;border:1px solid #d8d5c9;border-radius:6px;background:#fff;font-size:13px;color:#3a392f;cursor:pointer;margin-bottom:1.5rem;">Upload new resume</button>
+
+    <h3 class="section-h">Skills</h3>
+    <div class="addrow">
+      <select id="skill-select">
+        <option value="">Select a skill to add</option>
+        <option>Java</option><option>Spring Boot</option><option>React</option><option>JavaScript</option>
+        <option>TypeScript</option><option>MongoDB</option><option>SQL</option><option>Python</option>
+        <option>AWS</option><option>Node.js</option><option>Git</option><option>Customer service</option>
+      </select>
+      <button type="button" id="skill-add-btn">Add</button>
+    </div>
+    <div id="skill-chipwrap" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;"></div>
+
+    <h3 class="section-h">Interested roles</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;" id="rolesRow">
+      <span class="pill on" data-role="1">Software developer</span>
+      <span class="pill on" data-role="1">UI / UX designer</span>
+      <span class="pill on" data-role="1">QA / Testing</span>
+      <span class="pill" data-role="0">Data analyst</span>
+    </div>
+
+    <h3 class="section-h">Preferences</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px;">
+      <div class="field"><label>Salary min</label><input value="$55,000"></div>
+      <div class="field"><label>Salary max</label><input value="$75,000"></div>
+    </div>
+    <p style="font-size:12px;color:#3a392f;margin:0 0 8px;">Employment type</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;" id="etypeRow">
+      <span class="pill on" data-role="1">Full-time</span>
+      <span class="pill on" data-role="1">Contract</span>
+      <span class="pill" data-role="0">Part-time</span>
+      <span class="pill" data-role="0">Internship</span>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button type="button" id="cancelBtn" style="padding:10px 20px;border:1px solid #d8d5c9;border-radius:6px;background:#fff;font-size:13.5px;color:#3a392f;cursor:pointer;">Cancel</button>
+      <button type="button" id="saveBtn" style="flex:1;padding:10px 0;border:none;border-radius:6px;background:#1d5c46;color:#fff;font-size:13.5px;font-weight:500;cursor:pointer;">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function sendPrompt(text){ alert('Prototype navigation \u2192 ' + text); }
+  var prompts = {
+    careers: 'Show me the careers search page with job listings',
+    events: 'Show me the events list and event detail page',
+    profile: 'Show me the profile page',
+    contact: 'Show me the contact us page',
+    home: 'Show me the home dashboard'
+  };
+  document.querySelectorAll('.navlink').forEach(function(el){
+    el.addEventListener('click', function(){
+      var target = el.getAttribute('data-nav');
+      if (target && prompts[target]) { sendPrompt(prompts[target]); }
+    });
+  });
+
+  var avatarBtn = document.getElementById('avatarBtn');
+  var dropdown = document.getElementById('profileDropdown');
+  avatarBtn.addEventListener('click', function(e){ e.stopPropagation(); dropdown.classList.toggle('open'); });
+  document.addEventListener('click', function(){ dropdown.classList.remove('open'); });
+  dropdown.addEventListener('click', function(e){ e.stopPropagation(); });
+  document.querySelectorAll('.dropdown-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      var action = item.getAttribute('data-action');
+      dropdown.classList.remove('open');
+      if (action === 'profile') sendPrompt(prompts.profile);
+      else if (action === 'contact') sendPrompt(prompts.contact);
+      else if (action === 'password') sendPrompt('Show me the change password page');
+      else if (action === 'logout') sendPrompt('Show me the sign in page');
+    });
+  });
+
+  document.getElementById('backLink').addEventListener('click', function(){ sendPrompt(prompts.profile); });
+  document.getElementById('cancelBtn').addEventListener('click', function(){ sendPrompt(prompts.profile); });
+  document.getElementById('saveBtn').addEventListener('click', function(){ alert('Prototype only \u2014 would PUT to /api/employee-profile, then return to Profile.'); });
+  document.getElementById('uploadResumeBtn').addEventListener('click', function(){ alert('Prototype only \u2014 would open a file picker.'); });
+
+  // skills chip add/remove
+  var skills = ['React','JavaScript','TypeScript','Java','Spring Boot','MongoDB','Git'];
+  var skillWrap = document.getElementById('skill-chipwrap');
+  var skillSelect = document.getElementById('skill-select');
+  function renderSkills(){
+    skillWrap.innerHTML = '';
+    skills.forEach(function(s, i){
+      var chip = document.createElement('span'); chip.className = 'chip';
+      chip.innerHTML = s + ' <button type="button" data-i="' + i + '">&times;</button>';
+      skillWrap.appendChild(chip);
+    });
+  }
+  document.getElementById('skill-add-btn').addEventListener('click', function(){
+    var v = skillSelect.value;
+    if (!v || skills.indexOf(v) !== -1) return;
+    skills.push(v); skillSelect.value = ''; renderSkills();
+  });
+  skillWrap.addEventListener('click', function(e){
+    if (e.target.tagName === 'BUTTON') { skills.splice(+e.target.getAttribute('data-i'), 1); renderSkills(); }
+  });
+  renderSkills();
+
+  // toggle pills (roles + employment type)
+  document.querySelectorAll('.pill').forEach(function(p){
+    p.addEventListener('click', function(){ p.classList.toggle('on'); });
+  });
+})();
+</script>
+</body>
+</html>
